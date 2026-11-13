@@ -1,6 +1,6 @@
 {
   "name": "Claim",
-  "description": "Which guest is giving which item.",
+  "description": "Which guest is giving which item, and the name shown next to it.",
   "type": "object",
   "properties": {
     "chapter_id": {
@@ -11,6 +11,10 @@
     },
     "guest_id": {
       "type": "string"
+    },
+    "display_name": {
+      "type": "string",
+      "description": "What is shown next to what they give, such as The Jones Family. Empty means Someone who cares."
     },
     "claimed_at": {
       "type": "string"

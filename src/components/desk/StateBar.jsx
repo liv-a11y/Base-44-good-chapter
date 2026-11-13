@@ -11,7 +11,7 @@ export default function StateBar({ chapter, itemCount }) {
   const advance = useServerFn(advanceChapter);
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState(null);
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState("");
   const [error, setError] = useState("");
 
   const next = NEXT_STEP_LABELS[chapter.state];
@@ -25,16 +25,23 @@ export default function StateBar({ chapter, itemCount }) {
       const result = await advance({
         data: { chapter_id: chapter.id, origin: window.location.origin },
       });
-      if (result.email) {
-        setNote(
-          result.email.sent
-            ? { link: null, message: `Sent to ${chapter.person_email}.` }
-            : {
-                link: result.link,
-                message: "The letter did not send. Send the private link below by hand.",
-              },
-        );
+
+      let message = "";
+      const links = [];
+      if (result.guests) {
+        const { sent, total, unsent } = result.guests;
+        message = unsent.length
+          ? `Sent to ${sent} of ${total}. Send the rest by hand.`
+          : `Sent to ${sent} of ${total}.`;
+        links.push(...unsent.map((row) => ({ name: row.name, link: row.link })));
+      } else if (result.email) {
+        message = result.email.sent
+          ? `Sent to ${chapter.person_email}.`
+          : "The letter did not send. Send the private link below by hand.";
+        if (!result.email.sent && result.link) links.push({ name: null, link: result.link });
       }
+      if (message) setNote({ message, links });
+
       await router.invalidate();
     } catch (cause) {
       setError(cause?.message || "The chapter did not move.");
@@ -43,21 +50,16 @@ export default function StateBar({ chapter, itemCount }) {
     }
   };
 
-  const copy = async () => {
-    await navigator.clipboard.writeText(note.link);
-    setCopied(true);
+  const copy = async (link) => {
+    await navigator.clipboard.writeText(link);
+    setCopied(link);
   };
 
   return (
     <div className="flex flex-col items-start gap-3 sm:items-end">
       {next ? (
         <>
-          <button
-            type="button"
-            onClick={move}
-            disabled={busy || needsEight}
-            className="gc-btn"
-          >
+          <button type="button" onClick={move} disabled={busy || needsEight} className="gc-btn">
             <span className="gc-btn-label">{busy ? "Moving" : `Move to ${next}`}</span>
             <span className="gc-btn-arrow" aria-hidden="true">
               →
@@ -74,14 +76,19 @@ export default function StateBar({ chapter, itemCount }) {
       {note ? (
         <div className="max-w-[340px] border-t border-ink/30 pt-2">
           <p className="text-[17px] leading-[1.35] text-ink/80">{note.message}</p>
-          {note.link ? (
-            <div className="mt-1">
-              <p className="break-all font-mono text-[13px] text-ink/80">{note.link}</p>
-              <button type="button" onClick={copy} className="gc-label gc-link mt-1 pb-0.5">
-                {copied ? "Copied" : "Copy link"}
+          {note.links.map((row) => (
+            <div key={row.link} className="mt-2">
+              {row.name ? <p className="gc-label text-ink/55">{row.name}</p> : null}
+              <p className="break-all font-mono text-[13px] text-ink/80">{row.link}</p>
+              <button
+                type="button"
+                onClick={() => copy(row.link)}
+                className="gc-label gc-link mt-1 pb-0.5"
+              >
+                {copied === row.link ? "Copied" : "Copy link"}
               </button>
             </div>
-          ) : null}
+          ))}
         </div>
       ) : null}
 

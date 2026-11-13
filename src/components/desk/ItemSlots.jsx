@@ -113,6 +113,10 @@ export default function ItemSlots({ chapterId, items }) {
                     {answerLabel(item.status)}
                   </p>
 
+                  {item.claim ? (
+                    <p className="gc-label mt-1 text-ink/55">Taken by {item.claim}</p>
+                  ) : null}
+
                   <div className="mt-2 flex items-center justify-between gap-3">
                     <span className="gc-label truncate text-ink/50">
                       {item.source || "No source"}

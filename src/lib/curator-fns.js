@@ -1,7 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireUser } from "@/lib/auth-middleware";
-import { personLinkEmail } from "@/lib/emails";
+import { guestInvitationEmail, personLinkEmail } from "@/lib/emails";
+import { newToken } from "@/lib/tokens";
 
 /** The chapter lifecycle, in the only order the desk can walk it. */
 const NEXT_STATE = {
@@ -13,9 +14,6 @@ const NEXT_STATE = {
 };
 
 const EIGHT = 8;
-
-const token = () =>
-  Array.from({ length: 20 }, () => "abcdefghijkmnpqrstuvwxyz23456789"[Math.floor(Math.random() * 32)]).join("");
 
 const daysIn = (from) =>
   Math.max(0, Math.floor((Date.now() - new Date(from || Date.now()).getTime()) / 86400000));
@@ -83,20 +81,29 @@ export const getChapter = createServerFn({ method: "GET" })
       { chapter_id: chapter.id },
       { sort: "-created_date", limit: 20 },
     );
+    const claimPage = await service.entities.Claim.filter(
+      { chapter_id: chapter.id },
+      { limit: 50 },
+    );
+    const claims = claimPage.items ?? claimPage;
 
     return {
       chapter,
-      items: (itemPage.items ?? itemPage).map((item) => ({
-        id: item.id,
-        position: item.position,
-        name: item.name,
-        photo_url: item.photo_url || "",
-        price: item.price ?? null,
-        source: item.source || "",
-        source_url: item.source_url || "",
-        why: item.why || "",
-        status: item.status,
-      })),
+      items: (itemPage.items ?? itemPage).map((item) => {
+        const claim = claims.find((row) => row.item_id === item.id);
+        return {
+          id: item.id,
+          position: item.position,
+          name: item.name,
+          photo_url: item.photo_url || "",
+          price: item.price ?? null,
+          source: item.source || "",
+          source_url: item.source_url || "",
+          why: item.why || "",
+          status: item.status,
+          claim: claim ? claim.display_name || "Someone who cares" : "",
+        };
+      }),
       guests: (guestPage.items ?? guestPage).map((guest) => ({
         id: guest.id,
         name: guest.name,
@@ -208,6 +215,64 @@ export const replaceItem = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+const chunk = (rows, size) =>
+  rows.reduce((all, row, index) => {
+    const bucket = Math.floor(index / size);
+    all[bucket] = [...(all[bucket] || []), row];
+    return all;
+  }, []);
+
+/**
+ * Every guest gets their own private link, sent in the starter's name. Links
+ * are made once and kept, so a guest who comes back finds the same chapter.
+ */
+const sendGuestLinks = async (service, chapter, origin) => {
+  const page = await service.entities.Guest.filter({ chapter_id: chapter.id }, { limit: 50 });
+  const guests = page.items ?? page;
+  if (!guests.length) {
+    throw Object.assign(new Error("A chapter needs people before it goes out"), { status: 400 });
+  }
+
+  const base = origin.replace(/\/$/, "");
+  const rows = [];
+
+  for (const group of chunk(guests, 4)) {
+    const settled = await Promise.all(
+      group.map(async (guest) => {
+        const guestToken = guest.guest_token || newToken();
+        await service.entities.Guest.update(guest.id, {
+          guest_token: guestToken,
+          approved: true,
+          invited_at: new Date().toISOString(),
+        });
+
+        const link = `${base}/guest/${guestToken}`;
+        const letter = guestInvitationEmail({ chapter, guestName: guest.name, link });
+        try {
+          await service.integrations.Core.SendEmail({
+            to: guest.email,
+            subject: letter.subject,
+            text: letter.text,
+            html: letter.html,
+            from_name: (chapter.starter_name || "Good Chapter").trim(),
+            category: "transactional",
+          });
+          return { name: guest.name, link, sent: true };
+        } catch {
+          return { name: guest.name, link, sent: false };
+        }
+      }),
+    );
+    rows.push(...settled);
+  }
+
+  return {
+    total: rows.length,
+    sent: rows.filter((row) => row.sent).length,
+    unsent: rows.filter((row) => !row.sent),
+  };
+};
+
 /**
  * Walk the chapter one state forward. The move to "With the person" is the
  * moment the private link leaves the building, so it sends the letter.
@@ -242,7 +307,7 @@ export const advanceChapter = createServerFn({ method: "POST" })
       }
     }
 
-    const personToken = chapter.person_token || token();
+    const personToken = chapter.person_token || newToken();
     await service.entities.Chapter.update(chapter.id, {
       state: next,
       state_changed_at: new Date().toISOString(),
@@ -250,6 +315,10 @@ export const advanceChapter = createServerFn({ method: "POST" })
     });
 
     const result = { state: next, link: null, email: null };
+    if (next === "sent_to_guests") {
+      result.guests = await sendGuestLinks(service, chapter, data.origin);
+      return result;
+    }
     if (next !== "with_person_items") return result;
 
     const link = `${data.origin.replace(/\/$/, "")}/chapter/${personToken}`;

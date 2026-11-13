@@ -23,6 +23,10 @@
     },
     "invited_at": {
       "type": "string"
+    },
+    "guest_token": {
+      "type": "string",
+      "description": "Unguessable private link token. One per guest, created when the chapter goes out."
     }
   },
   "required": [
