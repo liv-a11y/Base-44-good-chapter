@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { useRouter } from "@tanstack/react-router";
 import ReplyComposer from "@/components/desk/ReplyComposer";
+import { sendReceipt } from "@/lib/requests-fns";
 
 const on = (value) =>
   value
@@ -17,7 +19,23 @@ const receipt = (request) => {
 };
 
 export default function RequestList({ requests }) {
+  const router = useRouter();
   const [openId, setOpenId] = useState("");
+  const [sending, setSending] = useState("");
+  const [error, setError] = useState("");
+
+  async function handleReceipt(request) {
+    setSending(request.id);
+    setError("");
+    try {
+      const result = await sendReceipt({ data: { id: request.id } });
+      if (!result.sent) setError(result.message || "The receipt did not send.");
+      await router.invalidate();
+    } catch (sendError) {
+      setError(sendError?.message || "The receipt did not send.");
+    }
+    setSending("");
+  }
 
   if (!requests.length) {
     return (
@@ -48,6 +66,16 @@ export default function RequestList({ requests }) {
 
               <div className="md:text-right">
                 <p className="gc-label text-ink/60">{receipt(request)}</p>
+                {request.acknowledged_on ? null : (
+                  <button
+                    type="button"
+                    onClick={() => handleReceipt(request)}
+                    disabled={sending === request.id}
+                    className="gc-label mt-2 block border-b border-ink pb-0.5 text-ink md:ml-auto"
+                  >
+                    {sending === request.id ? "Sending" : "Send the receipt"}
+                  </button>
+                )}
                 <p className="gc-label mt-1 text-ink/60">
                   {request.replied_on ? `Replied ${on(request.replied_on)}` : "No reply yet"}
                 </p>
@@ -60,6 +88,10 @@ export default function RequestList({ requests }) {
                 </button>
               </div>
             </div>
+
+            {error ? (
+              <p className="mb-5 max-w-[60ch] text-[15px] leading-[1.45] text-clay">{error}</p>
+            ) : null}
 
             {open ? <ReplyComposer request={request} /> : null}
           </li>

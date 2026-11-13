@@ -1,0 +1,40 @@
+{
+  "name": "Partner Request Acknowledgment",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "entity",
+      "events": [
+        "create"
+      ],
+      "entity_name": "Waitlist"
+    }
+  },
+  "description": "Sends the receipt note as soon as someone asks to hear from Good Chapter.",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "partner_request_acknowledgment",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "send_receipt": {
+          "call": "invoke_server_route",
+          "with": {
+            "path": "/api/partner-acknowledgment",
+            "body": {
+              "waitlist_id": "${ .trigger.entity_id }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Send the receipt",
+            "description": "One note confirming the request landed"
+          }
+        }
+      }
+    ]
+  }
+}
