@@ -22,6 +22,10 @@
       "type": "string",
       "description": "Retailer name. Shown small, never called a partner."
     },
+    "source_url": {
+      "type": "string",
+      "description": "Where the person or a guest can find the item."
+    },
     "why": {
       "type": "string",
       "description": "Why the curator chose this for this person."

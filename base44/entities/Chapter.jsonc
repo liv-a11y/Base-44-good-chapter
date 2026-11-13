@@ -13,6 +13,10 @@
     "person_email": {
       "type": "string"
     },
+    "person_token": {
+      "type": "string",
+      "description": "Private link token. The person is the only one who receives it."
+    },
     "chapter_type": {
       "type": "string",
       "enum": [
@@ -69,6 +73,10 @@
         "red"
       ],
       "default": "started"
+    },
+    "state_changed_at": {
+      "type": "string",
+      "description": "When the chapter entered its current state. Falls back to created_date."
     },
     "is_sample": {
       "type": "boolean",

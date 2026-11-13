@@ -2,6 +2,8 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { CHAPTER_TYPES } from "@/lib/chapter-types";
 
+const EIGHT = 8;
+
 export const getServerInfo = createServerFn({ method: "GET" }).handler(async () => ({
   renderedAt: new Date().toISOString(),
 }));
@@ -33,6 +35,9 @@ const newChapter = z.object({
 const reference = () =>
   `GC-${Math.random().toString(36).slice(2, 5).toUpperCase()}${Math.random().toString(36).slice(2, 4).toUpperCase()}`;
 
+const personToken = () =>
+  Array.from({ length: 20 }, () => "abcdefghijkmnpqrstuvwxyz23456789"[Math.floor(Math.random() * 32)]).join("");
+
 /**
  * The starter flow writes one chapter plus its guest list. The starter does not
  * hold an account, so this runs as the operator and stores the submission for
@@ -53,8 +58,10 @@ export const startChapter = createServerFn({ method: "POST" })
       rewatches: data.rewatches,
       never_buys: data.neverBuys,
       state: "started",
+      state_changed_at: new Date().toISOString(),
       is_sample: false,
       reference: reference(),
+      person_token: personToken(),
     });
 
     if (data.guests.length) {
@@ -96,3 +103,42 @@ export const getSampleChapter = createServerFn({ method: "GET" }).handler(async 
     })),
   };
 });
+
+/**
+ * The person's own chapter, reached only with the private token from their
+ * letter. The token is the key, so this runs as the operator.
+ */
+export const getChapterByToken = createServerFn({ method: "GET" })
+  .validator(z.object({ token: z.string().trim().min(12).max(64) }))
+  .handler(async ({ data, context }) => {
+    const service = context.getBase44().asServiceRole;
+
+    const chapterPage = await service.entities.Chapter.filter(
+      { person_token: data.token },
+      { limit: 1 },
+    );
+    const chapter = (chapterPage.items ?? chapterPage)[0];
+    if (!chapter) return null;
+
+    const itemPage = await service.entities.Item.filter(
+      { chapter_id: chapter.id },
+      { sort: "position", limit: EIGHT },
+    );
+
+    return {
+      person_name: chapter.person_name,
+      chapter_type: chapter.chapter_type,
+      story_line: chapter.story_line,
+      state: chapter.state,
+      is_sample: Boolean(chapter.is_sample),
+      items: (itemPage.items ?? itemPage).map((item) => ({
+        id: item.id,
+        name: item.name,
+        photo_url: item.photo_url || "",
+        price: item.price ?? null,
+        source: item.source || "",
+        source_url: item.source_url || "",
+        why: item.why || "",
+      })),
+    };
+  });

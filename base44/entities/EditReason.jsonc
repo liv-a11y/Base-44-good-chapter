@@ -23,22 +23,18 @@
     "reason_code": {
       "type": "string",
       "enum": [
-        "taste",
         "price",
-        "already_have",
-        "wrong_size",
-        "not_useful",
+        "taste",
         "duplicate",
-        "other"
+        "availability",
+        "person_asked"
       ],
       "enumColors": [
         "yellow",
         "yellow",
         "gray",
         "gray",
-        "gray",
-        "gray",
-        "gray"
+        "blue"
       ]
     },
     "note": {
