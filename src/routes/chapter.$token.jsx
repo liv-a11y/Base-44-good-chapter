@@ -1,7 +1,7 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { getChapterByToken } from "@/lib/server-fns";
 import Wordmark from "@/components/site/Wordmark";
-import { Image } from "@/components/ui/image";
+import ChapterItem from "@/components/person/ChapterItem";
 
 export const Route = createFileRoute("/chapter/$token")({
   loader: async ({ params }) => {
@@ -22,10 +22,9 @@ export const Route = createFileRoute("/chapter/$token")({
   component: PersonChapter,
 });
 
-const money = (value) => (value == null ? "" : `$${value}`);
-
 function PersonChapter() {
   const chapter = Route.useLoaderData();
+  const { token } = Route.useParams();
   const first = (chapter.person_name || "").split(/\s+/)[0] || "You";
 
   return (
@@ -55,24 +54,13 @@ function PersonChapter() {
 
         <div className="mt-10 grid gap-4 sm:grid-cols-2">
           {chapter.items.map((item, index) => (
-            <article key={item.id} className="border-2 border-ink bg-paper">
-              {item.photo_url ? (
-                <Image
-                  src={item.photo_url}
-                  alt={item.name}
-                  className="h-44 w-full border-b-2 border-ink object-cover"
-                />
-              ) : null}
-              <div className="p-4">
-                <p className="gc-label text-ink/40">{String(index + 1).padStart(2, "0")}</p>
-                <h2 className="font-heading text-[20px] leading-tight">{item.name}</h2>
-                <p className="mt-1 text-[15px] leading-relaxed text-ink/75">{item.why}</p>
-                <div className="mt-3 flex items-center justify-between gap-3">
-                  <span className="gc-label text-ink/40">{item.source}</span>
-                  <span className="font-mono text-[13px]">{money(item.price)}</span>
-                </div>
-              </div>
-            </article>
+            <ChapterItem
+              key={item.id}
+              token={token}
+              item={item}
+              index={index}
+              open={chapter.answers_open}
+            />
           ))}
         </div>
 

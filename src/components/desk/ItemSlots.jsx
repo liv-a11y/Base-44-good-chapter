@@ -10,6 +10,20 @@ const EIGHT = 8;
 
 const money = (value) => (value == null ? "—" : `$${value}`);
 
+const ANSWER_LABELS = {
+  approved: "The person approved this",
+  declined: "The person declined this",
+  given: "Given",
+};
+
+const answerLabel = (status) => ANSWER_LABELS[status] || "Waiting on the person";
+
+const answerTone = (status) => {
+  if (status === "declined") return "text-clay";
+  if (status === "approved" || status === "given") return "text-cobalt";
+  return "text-ink/40";
+};
+
 export default function ItemSlots({ chapterId, items }) {
   const router = useRouter();
   const add = useServerFn(addItem);
@@ -93,6 +107,10 @@ export default function ItemSlots({ chapterId, items }) {
                   </div>
 
                   <p className="mt-1 text-[15px] leading-relaxed text-ink/75">{item.why}</p>
+
+                  <p className={`gc-label mt-2 ${answerTone(item.status)}`}>
+                    {answerLabel(item.status)}
+                  </p>
 
                   <div className="mt-2 flex items-center justify-between gap-3">
                     <span className="gc-label truncate text-ink/40">

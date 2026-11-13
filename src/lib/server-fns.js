@@ -4,6 +4,9 @@ import { CHAPTER_TYPES } from "@/lib/chapter-types";
 
 const EIGHT = 8;
 
+/** The person can still change their answers until the list goes out to guests. */
+const ANSWERS_OPEN_STATES = ["started", "curating", "with_person_items", "with_person_guests"];
+
 export const getServerInfo = createServerFn({ method: "GET" }).handler(async () => ({
   renderedAt: new Date().toISOString(),
 }));
@@ -131,6 +134,7 @@ export const getChapterByToken = createServerFn({ method: "GET" })
       story_line: chapter.story_line,
       state: chapter.state,
       is_sample: Boolean(chapter.is_sample),
+      answers_open: ANSWERS_OPEN_STATES.includes(chapter.state),
       items: (itemPage.items ?? itemPage).map((item) => ({
         id: item.id,
         name: item.name,
@@ -139,6 +143,40 @@ export const getChapterByToken = createServerFn({ method: "GET" })
         source: item.source || "",
         source_url: item.source_url || "",
         why: item.why || "",
+        status: item.status || "proposed",
       })),
     };
+  });
+
+/**
+ * The person answers one item from their private link. The link token is the
+ * only key, so this runs as the operator and checks the item belongs to the
+ * chapter that token opens. Answers close once the chapter moves on to guests.
+ */
+export const answerItem = createServerFn({ method: "POST" })
+  .validator(
+    z.object({
+      token: z.string().trim().min(12).max(64),
+      itemId: z.string().trim().min(1).max(64),
+      answer: z.enum(["approved", "declined"]),
+    }),
+  )
+  .handler(async ({ data, context }) => {
+    const service = context.getBase44().asServiceRole;
+
+    const chapterPage = await service.entities.Chapter.filter(
+      { person_token: data.token },
+      { limit: 1 },
+    );
+    const chapter = (chapterPage.items ?? chapterPage)[0];
+    if (!chapter || !ANSWERS_OPEN_STATES.includes(chapter.state)) return { ok: false };
+
+    const item = await service.entities.Item.get(data.itemId).catch((error) => {
+      if (error.status === 404) return null;
+      throw error;
+    });
+    if (!item || item.chapter_id !== chapter.id) return { ok: false };
+
+    const updated = await service.entities.Item.update(item.id, { status: data.answer });
+    return { ok: true, status: updated.status ?? data.answer };
   });
