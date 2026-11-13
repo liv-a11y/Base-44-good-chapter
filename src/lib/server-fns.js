@@ -4,6 +4,8 @@ import { CHAPTER_TYPES } from "@/lib/chapter-types";
 
 const EIGHT = 8;
 
+const APP_URL = "https://goodchaptercollective.com";
+
 /** The person can still change their answers until the list goes out to guests. */
 const ANSWERS_OPEN_STATES = ["started", "curating", "with_person_items", "with_person_guests"];
 
@@ -63,11 +65,29 @@ export const requestInvitation = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const service = context.getBase44().asServiceRole;
-    await service.entities.Waitlist.create({
+    const record = await service.entities.Waitlist.create({
       email: data.email,
       interest: data.interest,
       comments: data.comments ?? "",
     });
+
+    // The receipt goes out at submission. It is not part of the answer: a send
+    // that fails leaves the request saved, and the desk shows it as unsent.
+    try {
+      await service.integrations.Core.SendEmail({
+        to: record.email,
+        template_name: "PartnerAcknowledgment",
+        variables: { interest: record.interest, app_url: APP_URL },
+        category: "transactional",
+        from_name: "Good Chapter Co.",
+      });
+      await service.entities.Waitlist.update(record.id, {
+        acknowledged_at: new Date().toISOString(),
+      });
+    } catch {
+      // Nothing to do: the curator can send it from the desk once email is set up.
+    }
+
     return { ok: true };
   });
 

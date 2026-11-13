@@ -1,6 +1,6 @@
 {
   "name": "Waitlist",
-  "description": "An invitation request from the public site.",
+  "description": "An invitation or partner request from the public site, and where its two replies stand.",
   "type": "object",
   "properties": {
     "email": {
@@ -20,6 +20,14 @@
     "comments": {
       "type": "string",
       "description": "Optional note. Callers are asked to leave out other people's names and health details."
+    },
+    "acknowledged_at": {
+      "type": "string",
+      "description": "When the automatic receipt went out. Empty means it has not sent."
+    },
+    "reply_sent_at": {
+      "type": "string",
+      "description": "When the curator's written reply went out. Empty means no reply yet."
     }
   },
   "required": [

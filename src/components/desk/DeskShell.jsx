@@ -10,9 +10,17 @@ export default function DeskShell({ children }) {
             <Wordmark tone="reverse" />
             <span className="gc-label text-plaster/65">Curator desk</span>
           </div>
-          <Link to="/" className="gc-label pb-0.5 text-plaster">
-            Leave
-          </Link>
+          <div className="flex items-center gap-5">
+            <Link to="/desk" className="gc-label pb-0.5 text-plaster/65">
+              Chapters
+            </Link>
+            <Link to="/desk/requests" className="gc-label pb-0.5 text-plaster/65">
+              Requests
+            </Link>
+            <Link to="/" className="gc-label pb-0.5 text-plaster">
+              Leave
+            </Link>
+          </div>
         </div>
       </header>
       <main className="mx-auto w-full max-w-[1180px] px-6 pb-24 pt-10">{children}</main>
