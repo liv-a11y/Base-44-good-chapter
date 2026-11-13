@@ -1,0 +1,75 @@
+{
+  "name": "EditReason",
+  "description": "Every change to a chapter list, who made it, and why.",
+  "type": "object",
+  "properties": {
+    "chapter_id": {
+      "type": "string"
+    },
+    "item_id": {
+      "type": "string"
+    },
+    "changed_by": {
+      "type": "string",
+      "enum": [
+        "curator",
+        "person"
+      ],
+      "enumColors": [
+        "gray",
+        "blue"
+      ]
+    },
+    "reason_code": {
+      "type": "string",
+      "enum": [
+        "taste",
+        "price",
+        "already_have",
+        "wrong_size",
+        "not_useful",
+        "duplicate",
+        "other"
+      ],
+      "enumColors": [
+        "yellow",
+        "yellow",
+        "gray",
+        "gray",
+        "gray",
+        "gray",
+        "gray"
+      ]
+    },
+    "note": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "chapter_id",
+    "changed_by",
+    "reason_code"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "name": "Guest",
+  "description": "Someone the starter named. Phone is stored only when given and is never messaged.",
+  "type": "object",
+  "properties": {
+    "chapter_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Optional. Stored, never used for messaging."
+    },
+    "approved": {
+      "type": "boolean",
+      "default": false,
+      "description": "Set once the person approves the guest list."
+    },
+    "invited_at": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "chapter_id",
+    "name",
+    "email"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "name": "Item",
+  "description": "One of the eight things in a chapter, with the reason it was chosen.",
+  "type": "object",
+  "properties": {
+    "chapter_id": {
+      "type": "string"
+    },
+    "position": {
+      "type": "number"
+    },
+    "name": {
+      "type": "string"
+    },
+    "photo_url": {
+      "type": "string"
+    },
+    "price": {
+      "type": "number"
+    },
+    "source": {
+      "type": "string",
+      "description": "Retailer name. Shown small, never called a partner."
+    },
+    "why": {
+      "type": "string",
+      "description": "Why the curator chose this for this person."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "proposed",
+        "approved",
+        "edited",
+        "declined",
+        "given"
+      ],
+      "enumColors": [
+        "gray",
+        "green",
+        "yellow",
+        "red",
+        "blue"
+      ],
+      "default": "proposed"
+    }
+  },
+  "required": [
+    "chapter_id",
+    "name"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "name": "Claim",
+  "description": "Which guest is giving which item.",
+  "type": "object",
+  "properties": {
+    "chapter_id": {
+      "type": "string"
+    },
+    "item_id": {
+      "type": "string"
+    },
+    "guest_id": {
+      "type": "string"
+    },
+    "claimed_at": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "chapter_id",
+    "item_id",
+    "guest_id"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

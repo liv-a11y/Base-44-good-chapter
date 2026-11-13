@@ -1,0 +1,106 @@
+{
+  "name": "Chapter",
+  "description": "One chapter: the person it is for, the starter who asked, and where it sits in the process.",
+  "type": "object",
+  "properties": {
+    "reference": {
+      "type": "string",
+      "description": "Short code the starter can quote. Not a secret link."
+    },
+    "person_name": {
+      "type": "string"
+    },
+    "person_email": {
+      "type": "string"
+    },
+    "chapter_type": {
+      "type": "string",
+      "enum": [
+        "First home, alone",
+        "Divorce",
+        "Coming out",
+        "After a health scare",
+        "Moving in together",
+        "New city",
+        "New job",
+        "A big lifestyle change",
+        "Adoption",
+        "Retirement",
+        "Something else"
+      ]
+    },
+    "starter_name": {
+      "type": "string"
+    },
+    "starter_email": {
+      "type": "string"
+    },
+    "story_line": {
+      "type": "string",
+      "description": "One line about the chapter, written by the curator."
+    },
+    "always_wears": {
+      "type": "string"
+    },
+    "rewatches": {
+      "type": "string"
+    },
+    "never_buys": {
+      "type": "string"
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "started",
+        "curating",
+        "with_person_items",
+        "with_person_guests",
+        "sent_to_guests",
+        "closed",
+        "declined"
+      ],
+      "enumColors": [
+        "gray",
+        "yellow",
+        "blue",
+        "blue",
+        "green",
+        "gray",
+        "red"
+      ],
+      "default": "started"
+    },
+    "is_sample": {
+      "type": "boolean",
+      "default": false,
+      "description": "Seeded example data. Always shown with a SAMPLE label."
+    }
+  },
+  "required": [
+    "person_name",
+    "chapter_type",
+    "state"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

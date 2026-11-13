@@ -4,89 +4,396 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
-    --font-heading: ui-sans-serif, system-ui, sans-serif;
-    --font-body: ui-sans-serif, system-ui, sans-serif;
-    --font-display: ui-sans-serif, system-ui, sans-serif;
-    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Ground and ink */
+    --background: 30 52% 91%; /* plaster #F4E8DC */
+    --foreground: 161 50% 11%; /* ink #0E2A21 */
+    --card: 32 68% 95%; /* #FBF3EA */
+    --card-foreground: 161 50% 11%;
+    --popover: 32 68% 95%;
+    --popover-foreground: 161 50% 11%;
+    --primary: 228 69% 50%; /* cobalt #284CD6 */
+    --primary-foreground: 30 52% 91%;
+    --secondary: 32 68% 95%;
+    --secondary-foreground: 161 50% 11%;
+    --muted: 32 45% 88%;
+    --muted-foreground: 161 22% 31%;
+    --accent: 95 14% 65%;
+    --accent-foreground: 161 50% 11%;
+    --destructive: 7 61% 47%; /* clay #C2402F */
+    --destructive-foreground: 30 52% 91%;
+    --border: 161 50% 11%;
+    --input: 161 50% 11%;
+    --ring: 161 50% 11%;
+    --chart-1: 173 78% 20%;
+    --chart-2: 95 14% 65%;
+    --chart-3: 30 55% 52%;
+    --chart-4: 228 69% 50%;
+    --chart-5: 7 61% 47%;
+    --radius: 0.25rem;
+    --font-heading: "Young Serif", Georgia, "Times New Roman", serif;
+    --font-body: "Satoshi", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-display: "Young Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "DM Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   }
 
-  .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-}
-
-
-
-@layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
     @apply bg-background text-foreground font-body;
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-heading;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  ::selection {
+    background: #0e2a21;
+    color: #f4e8dc;
+  }
+
+  :focus-visible {
+    outline: 2px solid #0e2a21;
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  .gc-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.4;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .gc-sticker {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border: 2px solid #0e2a21;
+    border-radius: 4px;
+    padding: 5px 9px;
+    transform: rotate(-2.5deg);
+    background: #fbf3ea;
+  }
+
+  .gc-rule {
+    border-top: 2px solid #0e2a21;
+  }
+
+  /* Primary action: cobalt, flips to ink on hover. */
+  .gc-btn {
+    display: inline-flex;
+    align-items: stretch;
+    min-height: 48px;
+    border-radius: 4px;
+    background: #284cd6;
+    color: #f4e8dc;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 15px;
+    letter-spacing: 0.01em;
+    line-height: 1.2;
+    text-decoration: none;
+    transition: background-color 0.22s ease, color 0.22s ease, opacity 0.22s ease;
+    cursor: pointer;
+  }
+
+  .gc-btn:hover:not(:disabled) {
+    background: #0e2a21;
+    color: #f4e8dc;
+  }
+
+  .gc-btn:disabled {
+    background: #e3d3c0;
+    color: rgba(14, 42, 33, 0.45);
+    cursor: not-allowed;
+  }
+
+  .gc-btn-label {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 20px;
+    white-space: nowrap;
+  }
+
+  .gc-btn-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    border-left: 1px solid rgba(244, 232, 220, 0.4);
+  }
+
+  .gc-link {
+    color: #284cd6;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.18s ease, color 0.18s ease;
+  }
+
+  .gc-link:hover {
+    border-bottom-color: #284cd6;
+  }
+
+  /* Row that flips to ink on hover. */
+  .gc-flip-link {
+    color: #0e2a21;
+    transition: color 0.18s ease, background-color 0.18s ease;
+  }
+  .gc-flip-link:hover {
+    background: #0e2a21;
+    color: #f4e8dc;
+  }
+
+  .gc-input {
+    width: 100%;
+    background: #fbf3ea;
+    border: 2px solid #0e2a21;
+    border-radius: 4px;
+    padding: 13px 15px;
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.6;
+    color: #0e2a21;
+    transition: background-color 0.18s ease;
+  }
+
+  .gc-input::placeholder {
+    color: rgba(14, 42, 33, 0.42);
+  }
+
+  .gc-input:focus {
+    outline: 2px solid #0e2a21;
+    outline-offset: 2px;
+  }
+
+  textarea.gc-input {
+    resize: vertical;
+    min-height: 132px;
+  }
+
+  .gc-option {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    text-align: left;
+    padding: 14px 16px;
+    border: 2px solid #0e2a21;
+    border-radius: 4px;
+    background: #fbf3ea;
+    color: #0e2a21;
+    font-size: 17px;
+    line-height: 1.4;
+    transition: background-color 0.18s ease, color 0.18s ease;
+  }
+
+  .gc-option:hover {
+    background: #0e2a21;
+    color: #f4e8dc;
+  }
+
+  .gc-option[aria-pressed="true"] {
+    background: #0e2a21;
+    color: #f4e8dc;
+  }
+}
+
+/* ---------- Hero ---------- */
+.gc-hero {
+  position: relative;
+  overflow: hidden;
+  background: #f4e8dc;
+}
+
+.gc-hero-inner {
+  container: gchero / inline-size;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding: clamp(36px, 5cqi, 64px) clamp(16px, 2cqi, 24px) 0;
+}
+
+.gc-hero-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.gc-hero-title {
+  margin: 0;
+  max-width: 900px;
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: clamp(2.4rem, 1.4rem + 4.2cqi, 4.375rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: #0e2a21;
+}
+
+.gc-hero-sub {
+  margin: clamp(18px, 2cqi, 24px) 0 0;
+  max-width: 470px;
+  font-size: 17px;
+  line-height: 1.6;
+  color: rgba(14, 42, 33, 0.82);
+}
+
+.gc-hero-cta {
+  margin-top: clamp(24px, 3cqi, 32px);
+}
+
+.gc-hero-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 100%;
+  gap: 12px;
+  margin-top: clamp(32px, 4.5cqi, 56px);
+  height: min(34cqi, 420px);
+  overflow: hidden;
+}
+
+.gc-hero-photo {
+  align-self: stretch;
+  min-width: 0;
+  min-height: 0;
+}
+
+.gc-hero-photo--2 {
+  transform: translateY(clamp(0px, 6cqi - 24px, 56px));
+}
+
+.gc-hero-frame {
+  position: relative;
+  margin: 0;
+  width: 100%;
+  height: calc(100% + clamp(40px, 9cqi, 120px));
+  border: 2px solid #0e2a21;
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+  overflow: hidden;
+  background: #e7d8c7;
+}
+
+@keyframes gc-rise {
+  from {
+    opacity: 0;
+    transform: translateY(1.4rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes gc-rise-photo {
+  from {
+    opacity: 0;
+    transform: translateY(2.2rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.gc-hero-anim .gc-hero-title,
+.gc-hero-anim .gc-hero-sub,
+.gc-hero-anim .gc-hero-cta {
+  opacity: 0;
+  animation: gc-rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+.gc-hero-anim .gc-hero-title {
+  animation-delay: 0.05s;
+}
+.gc-hero-anim .gc-hero-sub {
+  animation-delay: 0.18s;
+}
+.gc-hero-anim .gc-hero-cta {
+  animation-delay: 0.3s;
+}
+
+.gc-hero-anim .gc-hero-frame {
+  opacity: 0;
+  animation: gc-rise-photo 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+.gc-hero-anim .gc-hero-photo--1 .gc-hero-frame {
+  animation-delay: 0.42s;
+}
+.gc-hero-anim .gc-hero-photo--2 .gc-hero-frame {
+  animation-delay: 0.54s;
+}
+.gc-hero-anim .gc-hero-photo--3 .gc-hero-frame {
+  animation-delay: 0.66s;
+}
+
+@keyframes gc-letter-wave {
+  0%,
+  18%,
+  100% {
+    color: #0e2a21;
+  }
+  9% {
+    color: #c88440;
+  }
+}
+
+.gc-letter {
+  animation: gc-letter-wave 4.5s linear infinite;
+  animation-delay: calc(var(--gc-i, 0) * 0.09s);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gc-hero-anim .gc-hero-title,
+  .gc-hero-anim .gc-hero-sub,
+  .gc-hero-anim .gc-hero-cta,
+  .gc-hero-anim .gc-hero-frame {
+    opacity: 1;
+    animation: none;
+  }
+  .gc-letter {
+    animation: none;
+    color: #0e2a21;
+  }
+}
+
+/* Calm step entrance */
+@keyframes gc-step-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.gc-step {
+  animation: gc-step-in 0.35s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gc-step {
+    animation: none;
   }
 }

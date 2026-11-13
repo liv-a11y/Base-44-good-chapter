@@ -13,6 +13,15 @@ export default {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
+  			plaster: '#F4E8DC',
+  			paper: '#FBF3EA',
+  			ink: '#0E2A21',
+  			cobalt: '#284CD6',
+  			clay: '#C2402F',
+  			forest: '#0B5B52',
+  			sage: '#A3B298',
+  			ochre: '#C88440',
+  			coral: '#FF7A6B',
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
