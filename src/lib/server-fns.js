@@ -42,6 +42,36 @@ const personToken = () =>
   Array.from({ length: 20 }, () => "abcdefghijkmnpqrstuvwxyz23456789"[Math.floor(Math.random() * 32)]).join("");
 
 /**
+ * The public invitation request on the site. Visitors are not signed in, so
+ * this writes the request as the operator after checking its shape. Only the
+ * request itself is stored; nothing is emailed from here.
+ */
+export const requestInvitation = createServerFn({ method: "POST" })
+  .validator(
+    z.object({
+      email,
+      interest: z.enum([
+        "Consumer",
+        "Founding partner: Employer",
+        "Founding partner: Real estate",
+        "Founding partner: Brand",
+        "Investor",
+        "General inquiry",
+      ]),
+      comments: z.string().trim().max(1000).optional(),
+    }),
+  )
+  .handler(async ({ data, context }) => {
+    const service = context.getBase44().asServiceRole;
+    await service.entities.Waitlist.create({
+      email: data.email,
+      interest: data.interest,
+      comments: data.comments ?? "",
+    });
+    return { ok: true };
+  });
+
+/**
  * The starter flow writes one chapter plus its guest list. The starter does not
  * hold an account, so this runs as the operator and stores the submission for
  * the curator. Nothing is emailed from here.

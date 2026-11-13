@@ -1,83 +1,46 @@
-import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
 import { Image } from "@/components/ui/image";
-
-const TITLE = "a chapter nobody thought to plan for.";
-
-const DRAWINGS = [
-  {
-    src: "https://goodchaptercollective.com/brand/mugs-burgundy.png",
-    alt: "Drawing of two mugs.",
-    modifier: "gc-hero-photo--1",
-  },
-  {
-    src: "https://goodchaptercollective.com/brand/toaster-burgundy.png",
-    alt: "Drawing of a toaster with two slices of toast.",
-    modifier: "gc-hero-photo--2",
-  },
-  {
-    src: "https://goodchaptercollective.com/brand/blanket-burgundy.png",
-    alt: "Drawing of a folded blanket.",
-    modifier: "gc-hero-photo--3",
-  },
-];
-
-function RippleTitle() {
-  let index = 0;
-  return TITLE.split("").map((char, i) => {
-    if (char === " ") return " ";
-    const step = index++;
-    return (
-      <span key={i} className="gc-letter" style={{ "--gc-i": step }}>
-        {char}
-      </span>
-    );
-  });
-}
+import { DRAWINGS } from "@/lib/brand-assets";
 
 export default function Hero() {
-  const [anim, setAnim] = useState(false);
-
-  useEffect(() => {
-    const frame = requestAnimationFrame(() => requestAnimationFrame(() => setAnim(true)));
-    return () => cancelAnimationFrame(frame);
-  }, []);
-
   return (
-    <section aria-label="Good Chapter Co." className={`gc-hero ${anim ? "gc-hero-anim" : ""}`}>
-      <div className="gc-hero-inner">
-        <div className="gc-hero-head">
-          <h1 className="gc-hero-title">
-            <RippleTitle />
+    <section className="border-b border-ink">
+      <div className="mx-auto grid max-w-6xl items-end gap-10 px-6 py-14 md:grid-cols-[minmax(0,1fr)_auto] md:gap-14 md:py-24">
+        <div className="gc-step">
+          <p className="gc-label text-ink/65">Since 1924, nobody asks.</p>
+          <h1 className="mt-7 max-w-5xl text-[42px] leading-[1.1] sm:text-[60px] lg:text-[84px]">
+            you shouldn’t have to get married to get a{" "}
+            <span
+              aria-hidden="true"
+              className="mx-[0.03em] inline-block rounded-[2px] bg-cobalt px-[0.14em] pb-[0.09em] pt-[0.02em] leading-none text-plaster"
+            >
+              f$%#ng
+            </span>
+            <span className="sr-only">freaking</span> toaster.
           </h1>
-          <p className="gc-hero-sub">
-            A friend starts it. Eight things are chosen by a person, not a catalog. Nothing reaches
-            anyone until the person it is for says yes.
+          <p className="mt-7 max-w-[34rem] text-[19px] leading-[1.45] sm:text-[21px]">
+            When a friend steps into a big chapter, start it for them. They privately keep what fits.
+            Their people fill the house.
           </p>
-          <div className="gc-hero-cta">
-            <Link to="/start" className="gc-btn">
-              <span className="gc-btn-label">Start a chapter</span>
-              <span className="gc-btn-arrow" aria-hidden="true">
-                <ArrowRight size={17} strokeWidth={1.6} />
-              </span>
+          <div className="mt-9 flex flex-wrap items-center gap-x-7 gap-y-4">
+            <Link to="/" hash="invite" className="gc-btn">
+              <span className="gc-btn-label">Request an invitation</span>
+            </Link>
+            <Link
+              to="/first-place"
+              className="text-[18px] underline underline-offset-[6px] hover:text-cobalt"
+            >
+              See Maya’s chapter
             </Link>
           </div>
         </div>
 
-        <div className="gc-hero-gallery">
-          {DRAWINGS.map((drawing) => (
-            <div key={drawing.src} className={`gc-hero-photo ${drawing.modifier}`}>
-              <figure className="gc-hero-frame">
-                <Image
-                  src={drawing.src}
-                  alt={drawing.alt}
-                  className="h-full w-full object-contain p-[8%]"
-                />
-              </figure>
-            </div>
-          ))}
-        </div>
+        <Image
+          src={DRAWINGS.door}
+          alt=""
+          aria-hidden="true"
+          className="hidden h-auto w-[220px] md:block lg:w-[300px]"
+        />
       </div>
     </section>
   );
