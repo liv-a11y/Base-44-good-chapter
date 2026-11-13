@@ -8,6 +8,7 @@ import TypeStep from "@/components/start/steps/TypeStep";
 import PromptStep from "@/components/start/steps/PromptStep";
 import StarterStep from "@/components/start/steps/StarterStep";
 import GuestsStep from "@/components/start/steps/GuestsStep";
+import InterviewStep from "@/components/start/steps/InterviewStep";
 import DoneStep from "@/components/start/steps/DoneStep";
 
 export const Route = createFileRoute("/start")({
@@ -23,7 +24,7 @@ export const Route = createFileRoute("/start")({
   component: StartPage,
 });
 
-const TOTAL = 7;
+const TOTAL = 8;
 
 const EMPTY_FORM = {
   personName: "",
@@ -32,6 +33,7 @@ const EMPTY_FORM = {
   alwaysWears: "",
   rewatches: "",
   neverBuys: "",
+  starterIdeas: "",
   starterName: "",
   starterEmail: "",
   guests: [{ name: "", email: "" }],
@@ -126,8 +128,10 @@ function StartPage() {
       />
     );
   } else if (step === 5) {
-    screen = <StarterStep form={form} update={update} onNext={goNext} onBack={goBack} />;
+    screen = <InterviewStep form={form} update={update} onNext={goNext} onBack={goBack} />;
   } else if (step === 6) {
+    screen = <StarterStep form={form} update={update} onNext={goNext} onBack={goBack} />;
+  } else if (step === 7) {
     screen = (
       <GuestsStep
         form={form}

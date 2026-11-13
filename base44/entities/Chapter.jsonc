@@ -82,6 +82,10 @@
     "never_buys": {
       "type": "string"
     },
+    "starter_ideas": {
+      "type": "string",
+      "description": "The one idea the starter kept from the interview. An idea only, never an approved item."
+    },
     "state": {
       "type": "string",
       "enum": [

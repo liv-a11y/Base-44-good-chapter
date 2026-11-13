@@ -30,6 +30,7 @@ export default function AnswersPanel({ chapter, guests, reasons }) {
         <Field label="Always wears" value={chapter.always_wears} />
         <Field label="Rewatches" value={chapter.rewatches} />
         <Field label="Would never buy themselves" value={chapter.never_buys} />
+        <Field label="Idea kept from the interview" value={chapter.starter_ideas} />
         <Field
           label="Guests they named"
           value={
