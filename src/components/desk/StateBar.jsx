@@ -31,7 +31,7 @@ export default function StateBar({ chapter, itemCount }) {
             ? { link: null, message: `Sent to ${chapter.person_email}.` }
             : {
                 link: result.link,
-                message: "The letter did not send. The private link is below — send it by hand.",
+                message: "The letter did not send. Send the private link below by hand.",
               },
         );
       }
@@ -64,20 +64,20 @@ export default function StateBar({ chapter, itemCount }) {
             </span>
           </button>
           {needsEight ? (
-            <p className="gc-label text-ink/45">The person sees eight items, not {itemCount}</p>
+            <p className="gc-label text-ink/50">The person sees eight items, not {itemCount}</p>
           ) : null}
         </>
       ) : (
-        <p className="gc-label text-ink/40">Nowhere left to go</p>
+        <p className="gc-label text-ink/45">Nowhere left to go</p>
       )}
 
       {note ? (
-        <div className="max-w-[320px] border-t-2 border-ink/15 pt-2">
-          <p className="text-[14px] leading-relaxed text-ink/70">{note.message}</p>
+        <div className="max-w-[340px] border-t border-ink/30 pt-2">
+          <p className="text-[17px] leading-[1.35] text-ink/80">{note.message}</p>
           {note.link ? (
             <div className="mt-1">
-              <p className="break-all font-mono text-[12px] text-ink/70">{note.link}</p>
-              <button type="button" onClick={copy} className="gc-label mt-1 text-cobalt">
+              <p className="break-all font-mono text-[13px] text-ink/80">{note.link}</p>
+              <button type="button" onClick={copy} className="gc-label gc-link mt-1 pb-0.5">
                 {copied ? "Copied" : "Copy link"}
               </button>
             </div>
@@ -85,7 +85,7 @@ export default function StateBar({ chapter, itemCount }) {
         </div>
       ) : null}
 
-      {error ? <p className="max-w-[320px] text-[14px] text-clay">{error}</p> : null}
+      {error ? <p className="max-w-[340px] text-[17px] text-clay">{error}</p> : null}
     </div>
   );
 }

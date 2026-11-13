@@ -4,8 +4,8 @@
  * { subject, text, html } so the caller can send both a text and an html part.
  */
 
-const LOCKUP = "Good Chapter";
-const TAGLINE = "A chapter, not a registry.";
+const LOCKUP = "Good Chapter Co.";
+const TAGLINE = "for what comes next.";
 
 const firstName = (value, fallback) => {
   const name = (value || "").trim();
@@ -24,23 +24,23 @@ const wrap = (paragraphs, signoff) => {
     .map((paragraph) =>
       paragraph === ""
         ? `<div style="height:14px;line-height:14px">&nbsp;</div>`
-        : `<p style="margin:0 0 16px;font-family:Georgia,'Times New Roman',serif;font-size:16px;line-height:1.65;color:#0E2A21">${escape(
+        : `<p style="margin:0 0 16px;font-family:'EB Garamond',Garamond,Georgia,serif;font-size:19px;line-height:1.4;color:#651C1A">${escape(
             paragraph,
           ).replace(/\n/g, "<br />")}</p>`,
     )
     .join("");
 
   return `<!doctype html>
-<html><body style="margin:0;padding:28px 20px;background:#F4E8DC">
+<html><body style="margin:0;padding:28px 20px;background:#F8EBDA">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse">
 <tr><td align="center">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;border-collapse:collapse;background:#FBF3EA;border:2px solid #0E2A21">
-<tr><td style="padding:26px 28px 20px;border-bottom:2px solid #0E2A21">
-<span style="font-family:Georgia,'Times New Roman',serif;font-size:19px;letter-spacing:-0.01em;color:#0E2A21">${LOCKUP}</span>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;border-collapse:collapse;background:#F1DDC0;border:1.5px solid #651C1A">
+<tr><td style="padding:26px 28px 20px;border-bottom:1.5px solid #651C1A">
+<span style="font-family:'Fraunces',Georgia,serif;font-size:20px;letter-spacing:-0.01em;color:#651C1A">${LOCKUP}</span>
 </td></tr>
 <tr><td style="padding:28px 28px 8px">${body}</td></tr>
 <tr><td style="padding:0 28px 26px">
-<p style="margin:0;font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(14,42,33,0.55)">${escape(
+<p style="margin:0;font-family:'EB Garamond',Garamond,Georgia,serif;font-size:13px;letter-spacing:0.24em;text-transform:uppercase;color:#651C1A">${escape(
     signoff || TAGLINE,
   )}</p>
 </td></tr>

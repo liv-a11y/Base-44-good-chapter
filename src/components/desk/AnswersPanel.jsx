@@ -1,9 +1,11 @@
 import { CHAPTER_STATE_LABELS } from "@/lib/chapter-types";
 
 const Field = ({ label, value }) => (
-  <div className="border-t-2 border-ink/15 py-3">
-    <p className="gc-label text-ink/45">{label}</p>
-    <p className="mt-1 whitespace-pre-line text-[16px] leading-relaxed">{value || "—"}</p>
+  <div className="border-t border-ink/25 py-3">
+    <p className="gc-label text-ink/50">{label}</p>
+    <p className="mt-1 whitespace-pre-line text-[19px] leading-[1.35]">
+      {value || "Not answered"}
+    </p>
   </div>
 );
 
@@ -11,10 +13,10 @@ export default function AnswersPanel({ chapter, guests, reasons }) {
   return (
     <section aria-labelledby="answers-heading">
       <div className="flex items-baseline justify-between gap-4">
-        <h2 id="answers-heading" className="text-[22px]">
+        <h2 id="answers-heading" className="text-[26px]">
           What the starter said
         </h2>
-        <span className="gc-label text-ink/45">{guests.length} guests</span>
+        <span className="gc-label text-ink/50">{guests.length} guests</span>
       </div>
 
       <div className="mt-3">
@@ -30,22 +32,24 @@ export default function AnswersPanel({ chapter, guests, reasons }) {
         <Field label="Would never buy themselves" value={chapter.never_buys} />
         <Field
           label="Guests they named"
-          value={guests.length ? guests.map((guest) => `${guest.name} — ${guest.email}`).join("\n") : ""}
+          value={
+            guests.length
+              ? guests.map((guest) => `${guest.name} · ${guest.email}`).join("\n")
+              : ""
+          }
         />
       </div>
 
-      <p className="gc-label mt-4 text-ink/45">State: {CHAPTER_STATE_LABELS[chapter.state]}</p>
+      <p className="gc-label mt-4 text-ink/50">State: {CHAPTER_STATE_LABELS[chapter.state]}</p>
 
       {reasons.length ? (
         <div className="mt-6">
-          <h3 className="gc-label text-ink/45">Changes made here</h3>
+          <h3 className="gc-label text-ink/50">Changes made here</h3>
           <ul className="mt-2 space-y-2">
             {reasons.map((reason) => (
-              <li key={reason.id} className="text-[15px] text-ink/80">
-                <span className="font-mono text-[13px] uppercase tracking-[0.1em]">
-                  {reason.reason_code.replace("_", " ")}
-                </span>
-                {reason.note ? ` — ${reason.note}` : ""}
+              <li key={reason.id} className="text-[17px] leading-[1.35] text-ink/85">
+                <span className="gc-spec uppercase">{reason.reason_code.replace("_", " ")}</span>
+                {reason.note ? ` · ${reason.note}` : ""}
               </li>
             ))}
           </ul>

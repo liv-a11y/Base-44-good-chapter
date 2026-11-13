@@ -1,38 +1,41 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,400,100&family=EB+Garamond:wght@400;500&family=DM+Sans:wght@700&family=DM+Mono:wght@400&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    /* Ground and ink */
-    --background: 30 52% 91%; /* plaster #F4E8DC */
-    --foreground: 161 50% 11%; /* ink #0E2A21 */
-    --card: 32 68% 95%; /* #FBF3EA */
-    --card-foreground: 161 50% 11%;
-    --popover: 32 68% 95%;
-    --popover-foreground: 161 50% 11%;
-    --primary: 228 69% 50%; /* cobalt #284CD6 */
-    --primary-foreground: 30 52% 91%;
-    --secondary: 32 68% 95%;
-    --secondary-foreground: 161 50% 11%;
-    --muted: 32 45% 88%;
-    --muted-foreground: 161 22% 31%;
-    --accent: 95 14% 65%;
-    --accent-foreground: 161 50% 11%;
+    /* Paper and burgundy */
+    --background: 34 68% 91%; /* paper #F8EBDA */
+    --foreground: 2 59% 25%; /* burgundy #651C1A */
+    --card: 36 64% 85%; /* linen #F1DDC0 */
+    --card-foreground: 2 59% 25%;
+    --popover: 36 64% 85%;
+    --popover-foreground: 2 59% 25%;
+    --primary: 228 68% 50%; /* cobalt #284CD6 */
+    --primary-foreground: 34 68% 91%;
+    --secondary: 36 64% 85%;
+    --secondary-foreground: 2 59% 25%;
+    --muted: 36 45% 88%;
+    --muted-foreground: 2 35% 38%;
+    --accent: 36 64% 85%;
+    --accent-foreground: 2 59% 25%;
     --destructive: 7 61% 47%; /* clay #C2402F */
-    --destructive-foreground: 30 52% 91%;
-    --border: 161 50% 11%;
-    --input: 161 50% 11%;
-    --ring: 161 50% 11%;
-    --chart-1: 173 78% 20%;
-    --chart-2: 95 14% 65%;
-    --chart-3: 30 55% 52%;
-    --chart-4: 228 69% 50%;
-    --chart-5: 7 61% 47%;
+    --destructive-foreground: 34 68% 91%;
+    --border: 2 59% 25%;
+    --input: 2 59% 25%;
+    --ring: 2 59% 25%;
+    --chart-1: 2 59% 25%;
+    --chart-2: 228 68% 50%;
+    --chart-3: 7 61% 47%;
+    --chart-4: 95 14% 65%;
+    --chart-5: 32 63% 46%;
     --radius: 0.25rem;
-    --font-heading: "Young Serif", Georgia, "Times New Roman", serif;
-    --font-body: "Satoshi", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    --font-display: "Young Serif", Georgia, "Times New Roman", serif;
+    --font-heading: "Fraunces", Georgia, "Times New Roman", serif;
+    --font-body: "EB Garamond", Georgia, "Times New Roman", serif;
+    --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+    --font-sans: "DM Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     --font-mono: "DM Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   }
 
@@ -46,8 +49,8 @@
 
   body {
     @apply bg-background text-foreground font-body;
-    font-size: 17px;
-    line-height: 1.6;
+    font-size: 19px;
+    line-height: 1.38;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
@@ -57,44 +60,73 @@
   h3 {
     @apply font-heading;
     font-weight: 400;
+    font-variation-settings: "SOFT" 100;
+    line-height: 1;
     letter-spacing: -0.01em;
   }
 
+  /* Fraunces is only ever used with the soft axis at full. */
+  .font-heading {
+    font-variation-settings: "SOFT" 100;
+  }
+
+  /* Small specs: prices, counts, item numbers. */
+  .font-mono {
+    letter-spacing: 0.1em;
+  }
+
   ::selection {
-    background: #0e2a21;
-    color: #f4e8dc;
+    background: #651c1a;
+    color: #f8ebda;
   }
 
   :focus-visible {
-    outline: 2px solid #0e2a21;
+    outline: 2px solid #651c1a;
     outline-offset: 3px;
   }
 }
 
 @layer components {
   .gc-label {
-    font-family: var(--font-mono);
-    font-size: 11px;
+    font-family: var(--font-body);
+    font-size: 13px;
     line-height: 1.4;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.24em;
     text-transform: uppercase;
+  }
+
+  /* One loud line per screen: lowercase, regular weight, ends with a period. */
+  .gc-loud {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-variation-settings: "SOFT" 100;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    text-transform: lowercase;
+  }
+
+  /* Small specs: prices, counts, item numbers. */
+  .gc-spec {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.1em;
   }
 
   .gc-sticker {
     display: inline-block;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.12em;
+    font-family: var(--font-body);
+    font-size: 13px;
+    letter-spacing: 0.24em;
     text-transform: uppercase;
-    border: 2px solid #0e2a21;
-    border-radius: 4px;
-    padding: 5px 9px;
-    transform: rotate(-2.5deg);
-    background: #fbf3ea;
+    border: 1.5px solid #c2402f;
+    border-radius: 0;
+    padding: 5px 10px;
+    color: #c2402f;
+    background: transparent;
   }
 
   .gc-rule {
-    border-top: 2px solid #0e2a21;
+    border-top: 1.5px solid #651c1a;
   }
 
   /* Primary action: cobalt, flips to ink on hover. */
@@ -104,25 +136,25 @@
     min-height: 48px;
     border-radius: 4px;
     background: #284cd6;
-    color: #f4e8dc;
-    font-family: var(--font-body);
-    font-weight: 500;
-    font-size: 15px;
-    letter-spacing: 0.01em;
+    color: #f8ebda;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.04em;
     line-height: 1.2;
     text-decoration: none;
-    transition: background-color 0.22s ease, color 0.22s ease, opacity 0.22s ease;
+    transition: background-color 0.2s ease, color 0.2s ease;
     cursor: pointer;
   }
 
   .gc-btn:hover:not(:disabled) {
-    background: #0e2a21;
-    color: #f4e8dc;
+    background: #651c1a;
+    color: #f8ebda;
   }
 
   .gc-btn:disabled {
-    background: #e3d3c0;
-    color: rgba(14, 42, 33, 0.45);
+    background: #e6d3b8;
+    color: rgba(101, 28, 26, 0.45);
     cursor: not-allowed;
   }
 
@@ -138,49 +170,49 @@
     align-items: center;
     justify-content: center;
     width: 46px;
-    border-left: 1px solid rgba(244, 232, 220, 0.4);
+    border-left: 1px solid rgba(248, 232, 218, 0.45);
   }
 
   .gc-link {
-    color: #284cd6;
+    color: #651c1a;
     text-decoration: none;
-    border-bottom: 2px solid transparent;
-    transition: border-color 0.18s ease, color 0.18s ease;
+    border-bottom: 1.5px solid #651c1a;
   }
 
   .gc-link:hover {
+    color: #284cd6;
     border-bottom-color: #284cd6;
   }
 
-  /* Row that flips to ink on hover. */
+  /* Row that flips to burgundy on hover. */
   .gc-flip-link {
-    color: #0e2a21;
+    color: #651c1a;
     transition: color 0.18s ease, background-color 0.18s ease;
   }
   .gc-flip-link:hover {
-    background: #0e2a21;
-    color: #f4e8dc;
+    background: #651c1a;
+    color: #f8ebda;
   }
 
   .gc-input {
     width: 100%;
-    background: #fbf3ea;
-    border: 2px solid #0e2a21;
-    border-radius: 4px;
-    padding: 13px 15px;
+    background: #f8ebda;
+    border: 1.5px solid #651c1a;
+    border-radius: 0;
+    padding: 12px 14px;
     font-family: var(--font-body);
-    font-size: 17px;
-    line-height: 1.6;
-    color: #0e2a21;
+    font-size: 19px;
+    line-height: 1.38;
+    color: #651c1a;
     transition: background-color 0.18s ease;
   }
 
   .gc-input::placeholder {
-    color: rgba(14, 42, 33, 0.42);
+    color: rgba(101, 28, 26, 0.4);
   }
 
   .gc-input:focus {
-    outline: 2px solid #0e2a21;
+    outline: 2px solid #651c1a;
     outline-offset: 2px;
   }
 
@@ -195,24 +227,23 @@
     gap: 16px;
     width: 100%;
     text-align: left;
-    padding: 14px 16px;
-    border: 2px solid #0e2a21;
-    border-radius: 4px;
-    background: #fbf3ea;
-    color: #0e2a21;
-    font-size: 17px;
-    line-height: 1.4;
+    padding: 13px 16px;
+    border: 1.5px solid #651c1a;
+    border-radius: 0;
+    background: #f8ebda;
+    color: #651c1a;
+    font-size: 19px;
+    line-height: 1.3;
     transition: background-color 0.18s ease, color 0.18s ease;
   }
 
   .gc-option:hover {
-    background: #0e2a21;
-    color: #f4e8dc;
+    background: #f1ddc0;
   }
 
   .gc-option[aria-pressed="true"] {
-    background: #0e2a21;
-    color: #f4e8dc;
+    background: #651c1a;
+    color: #f8ebda;
   }
 }
 
@@ -220,7 +251,7 @@
 .gc-hero {
   position: relative;
   overflow: hidden;
-  background: #f4e8dc;
+  background: #f8ebda;
 }
 
 .gc-hero-inner {
@@ -242,18 +273,19 @@
   max-width: 900px;
   font-family: var(--font-heading);
   font-weight: 400;
-  font-size: clamp(2.4rem, 1.4rem + 4.2cqi, 4.375rem);
-  line-height: 1.1;
+  font-variation-settings: "SOFT" 100;
+  font-size: clamp(2rem, 1rem + 5.4cqi, 6.5rem);
+  line-height: 1;
   letter-spacing: -0.01em;
-  color: #0e2a21;
+  color: #651c1a;
 }
 
 .gc-hero-sub {
   margin: clamp(18px, 2cqi, 24px) 0 0;
   max-width: 470px;
-  font-size: 17px;
-  line-height: 1.6;
-  color: rgba(14, 42, 33, 0.82);
+  font-size: 21px;
+  line-height: 1.38;
+  color: #651c1a;
 }
 
 .gc-hero-cta {
@@ -285,11 +317,11 @@
   margin: 0;
   width: 100%;
   height: calc(100% + clamp(40px, 9cqi, 120px));
-  border: 2px solid #0e2a21;
+  border: 1.5px solid #651c1a;
   border-bottom: none;
-  border-radius: 4px 4px 0 0;
+  border-radius: 0;
   overflow: hidden;
-  background: #e7d8c7;
+  background: #f1ddc0;
 }
 
 @keyframes gc-rise {
@@ -350,10 +382,10 @@
   0%,
   18%,
   100% {
-    color: #0e2a21;
+    color: #651c1a;
   }
   9% {
-    color: #c88440;
+    color: #c1812b;
   }
 }
 
@@ -372,7 +404,7 @@
   }
   .gc-letter {
     animation: none;
-    color: #0e2a21;
+    color: #651c1a;
   }
 }
 

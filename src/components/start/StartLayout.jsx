@@ -6,10 +6,10 @@ export default function StartLayout({ step, total, children }) {
 
   return (
     <div className="flex min-h-screen flex-col bg-plaster">
-      <header className="border-b-2 border-ink">
+      <header className="bg-ink">
         <div className="mx-auto flex w-full max-w-[1100px] items-center justify-between gap-6 px-6 py-5">
-          <Wordmark />
-          <Link to="/" className="gc-label text-cobalt">
+          <Wordmark tone="reverse" />
+          <Link to="/" className="gc-label pb-0.5 text-plaster">
             Leave
           </Link>
         </div>
@@ -17,11 +17,14 @@ export default function StartLayout({ step, total, children }) {
 
       <div className="mx-auto w-full max-w-[1100px] px-6 pt-6">
         <div className="flex items-center gap-4">
-          <span className="gc-label text-ink/60">
+          <span className="gc-label text-ink/55">
             Step {String(step + 1).padStart(2, "0")} of {String(total).padStart(2, "0")}
           </span>
-          <div className="h-[2px] flex-1 bg-ink/15">
-            <div className="h-full bg-ink transition-all duration-500" style={{ width: `${filled}%` }} />
+          <div className="h-[1.5px] flex-1 bg-ink/20">
+            <div
+              className="h-full bg-cobalt transition-all duration-500"
+              style={{ width: `${filled}%` }}
+            />
           </div>
         </div>
       </div>

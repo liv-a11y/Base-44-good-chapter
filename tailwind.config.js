@@ -12,16 +12,27 @@ export default {
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
   		},
+  		// Every rule in the brand is 1.5px burgundy: the 1px and 2px steps both land there.
+  		borderWidth: {
+  			DEFAULT: '1.5px',
+  			2: '1.5px'
+  		},
   		colors: {
-  			plaster: '#F4E8DC',
-  			paper: '#FBF3EA',
-  			ink: '#0E2A21',
-  			cobalt: '#284CD6',
-  			clay: '#C2402F',
-  			forest: '#0B5B52',
-  			sage: '#A3B298',
-  			ochre: '#C88440',
+  			// Lead four
+  			plaster: '#F8EBDA', // paper, the page
+  			paper: '#F1DDC0', // linen, card and panel fill
+  			linen: '#F1DDC0',
+  			ink: '#651C1A', // burgundy: all text, all borders
+  			cobalt: '#284CD6', // go
+  			clay: '#C2402F', // the tag mark and one loud band
+  			// Supporting, small doses
+  			blush: '#E59A6C',
+  			mustard: '#C1812B',
   			coral: '#FF7A6B',
+  			sage: '#A3B298',
+  			olive: '#635728',
+  			walnut: '#85522C',
+  			green: '#0B5B52',
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
@@ -77,6 +88,7 @@ export default {
   			heading: ['var(--font-heading)'],
   			body: ['var(--font-body)'],
   			display: ['var(--font-display)'],
+  			sans: ['var(--font-sans)'],
   			mono: ['var(--font-mono)']
   		},
   		keyframes: {

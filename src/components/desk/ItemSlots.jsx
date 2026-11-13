@@ -3,12 +3,13 @@ import { useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { ArrowDown, ArrowUp, Plus } from "lucide-react";
 import { Image } from "@/components/ui/image";
+import DrawingPlaceholder from "@/components/site/DrawingPlaceholder";
 import { addItem, replaceItem, reorderItems } from "@/lib/curator-fns";
 import ItemDialog from "@/components/desk/ItemDialog";
 
 const EIGHT = 8;
 
-const money = (value) => (value == null ? "—" : `$${value}`);
+const money = (value) => (value == null ? "No price" : `$${value}`);
 
 const ANSWER_LABELS = {
   approved: "The person approved this",
@@ -21,7 +22,7 @@ const answerLabel = (status) => ANSWER_LABELS[status] || "Waiting on the person"
 const answerTone = (status) => {
   if (status === "declined") return "text-clay";
   if (status === "approved" || status === "given") return "text-cobalt";
-  return "text-ink/40";
+  return "text-ink/50";
 };
 
 export default function ItemSlots({ chapterId, items }) {
@@ -71,49 +72,49 @@ export default function ItemSlots({ chapterId, items }) {
   return (
     <section aria-labelledby="slots-heading">
       <div className="flex items-baseline justify-between gap-4">
-        <h2 id="slots-heading" className="text-[22px]">
+        <h2 id="slots-heading" className="text-[26px]">
           The eight
         </h2>
-        <span className="gc-label text-ink/45">
+        <span className="gc-label text-ink/50">
           {items.length} of {EIGHT}
         </span>
       </div>
 
-      {error ? <p className="mt-2 text-[15px] text-clay">{error}</p> : null}
+      {error ? <p className="mt-2 text-[17px] text-clay">{error}</p> : null}
 
       <div className="mt-3 space-y-3">
         {Array.from({ length: EIGHT }).map((_, index) => {
           const item = items[index];
           return item ? (
-            <article key={item.id} className="border-2 border-ink bg-paper p-4">
+            <article key={item.id} className="border border-ink bg-paper p-4">
               <div className="flex gap-4">
                 {item.photo_url ? (
                   <Image
                     src={item.photo_url}
                     alt={item.name}
-                    className="h-20 w-20 shrink-0 border-2 border-ink object-cover"
+                    className="h-20 w-20 shrink-0 border border-ink object-cover"
                   />
                 ) : (
-                  <div className="h-20 w-20 shrink-0 border-2 border-ink/25 bg-plaster" />
+                  <DrawingPlaceholder label="No drawing" className="h-20 w-20 shrink-0" />
                 )}
 
                 <div className="min-w-0 flex-1">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="gc-label text-ink/40">{String(index + 1).padStart(2, "0")}</p>
-                      <h3 className="font-heading text-[19px] leading-tight">{item.name}</h3>
+                      <p className="gc-spec text-ink/50">{String(index + 1).padStart(2, "0")}</p>
+                      <h3 className="font-heading text-[22px] leading-tight">{item.name}</h3>
                     </div>
-                    <p className="shrink-0 font-mono text-[13px]">{money(item.price)}</p>
+                    <p className="gc-spec shrink-0">{money(item.price)}</p>
                   </div>
 
-                  <p className="mt-1 text-[15px] leading-relaxed text-ink/75">{item.why}</p>
+                  <p className="mt-1 text-[19px] leading-[1.35] text-ink/85">{item.why}</p>
 
                   <p className={`gc-label mt-2 ${answerTone(item.status)}`}>
                     {answerLabel(item.status)}
                   </p>
 
                   <div className="mt-2 flex items-center justify-between gap-3">
-                    <span className="gc-label truncate text-ink/40">
+                    <span className="gc-label truncate text-ink/50">
                       {item.source || "No source"}
                     </span>
                     <div className="flex shrink-0 items-center gap-1">
@@ -122,7 +123,7 @@ export default function ItemSlots({ chapterId, items }) {
                         aria-label={`Move ${item.name} up`}
                         onClick={() => move(index, -1)}
                         disabled={index === 0}
-                        className="flex h-8 w-8 items-center justify-center border-2 border-ink text-ink transition-colors hover:bg-ink hover:text-plaster disabled:border-ink/20 disabled:text-ink/25 disabled:hover:bg-transparent disabled:hover:text-ink/25"
+                        className="flex h-8 w-8 items-center justify-center border border-ink text-ink transition-colors hover:bg-ink hover:text-plaster disabled:border-ink/25 disabled:text-ink/30 disabled:hover:bg-transparent disabled:hover:text-ink/30"
                       >
                         <ArrowUp size={14} strokeWidth={1.8} />
                       </button>
@@ -131,14 +132,14 @@ export default function ItemSlots({ chapterId, items }) {
                         aria-label={`Move ${item.name} down`}
                         onClick={() => move(index, 1)}
                         disabled={index === items.length - 1}
-                        className="flex h-8 w-8 items-center justify-center border-2 border-ink text-ink transition-colors hover:bg-ink hover:text-plaster disabled:border-ink/20 disabled:text-ink/25 disabled:hover:bg-transparent disabled:hover:text-ink/25"
+                        className="flex h-8 w-8 items-center justify-center border border-ink text-ink transition-colors hover:bg-ink hover:text-plaster disabled:border-ink/25 disabled:text-ink/30 disabled:hover:bg-transparent disabled:hover:text-ink/30"
                       >
                         <ArrowDown size={14} strokeWidth={1.8} />
                       </button>
                       <button
                         type="button"
                         onClick={() => setDialog({ mode: "replace", item })}
-                        className="gc-label border-b-2 border-transparent pb-0.5 text-cobalt transition-colors hover:border-cobalt"
+                        className="gc-label gc-link ml-2 pb-0.5"
                       >
                         Replace
                       </button>
@@ -153,12 +154,12 @@ export default function ItemSlots({ chapterId, items }) {
               type="button"
               onClick={() => setDialog({ mode: "add" })}
               disabled={items.length >= EIGHT}
-              className="flex w-full items-center gap-3 border-2 border-dashed border-ink/25 px-4 py-5 text-left transition-colors hover:border-ink hover:bg-paper disabled:hover:border-ink/25 disabled:hover:bg-transparent"
+              className="flex w-full items-center gap-3 border border-dashed border-ink/35 px-4 py-5 text-left transition-colors hover:border-ink hover:bg-paper disabled:hover:border-ink/35 disabled:hover:bg-transparent"
             >
-              <span className="gc-label w-6 shrink-0 text-ink/35">
+              <span className="gc-spec w-6 shrink-0 text-ink/40">
                 {String(index + 1).padStart(2, "0")}
               </span>
-              <span className="gc-label flex items-center gap-2 text-ink/55">
+              <span className="gc-label flex items-center gap-2 text-ink/60">
                 <Plus size={14} strokeWidth={1.8} /> Add an item
               </span>
             </button>

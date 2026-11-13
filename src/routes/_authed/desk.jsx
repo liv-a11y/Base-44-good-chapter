@@ -9,7 +9,7 @@ export const Route = createFileRoute("/_authed/desk")({
     if (context.user?.role !== "admin") throw redirect({ to: "/" });
   },
   loader: () => listChapters(),
-  head: () => ({ meta: [{ title: "Curator desk | Good Chapter" }] }),
+  head: () => ({ meta: [{ title: "Curator desk | Good Chapter Co." }] }),
   component: DeskPage,
 });
 
@@ -19,8 +19,8 @@ function DeskPage() {
 
   return (
     <DeskShell>
-      <div className="flex flex-wrap items-end justify-between gap-4 border-b-2 border-ink pb-5">
-        <h1 className="text-[36px] leading-none">Chapters</h1>
+      <div className="flex flex-wrap items-end justify-between gap-4 border-b border-ink pb-5">
+        <h1 className="text-[clamp(32px,4vw,48px)]">Chapters</h1>
         <span className="gc-label text-ink/55">{open.length} open</span>
       </div>
       <div className="mt-2">

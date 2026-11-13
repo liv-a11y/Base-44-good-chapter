@@ -21,20 +21,24 @@ export default function StartQuestion({
       }}
     >
       <span className="gc-label text-ink/55">{label}</span>
-      <h1 className="mt-4 text-[clamp(28px,4.4vw,40px)] leading-[1.14] text-ink">{question}</h1>
-      {hint ? <p className="mt-4 max-w-[440px] text-[17px] leading-relaxed text-ink/75">{hint}</p> : null}
+      <h1 className="mt-4 text-[clamp(30px,4.4vw,48px)]">{question}</h1>
+      {hint ? (
+        <p className="mt-4 max-w-[44ch] text-[21px] leading-[1.38] text-ink/85">{hint}</p>
+      ) : null}
 
       <div className="mt-9">{children}</div>
 
-      {error ? <p className="mt-5 border-l-2 border-clay pl-3 text-[15px] leading-relaxed text-clay">{error}</p> : null}
+      {error ? (
+        <p className="mt-5 border-l border-clay pl-3 text-[17px] leading-[1.38] text-clay">{error}</p>
+      ) : null}
 
-      <div className="mt-10 flex items-center justify-between gap-4 border-t-2 border-ink pt-6">
+      <div className="mt-10 flex items-center justify-between gap-4 border-t border-ink pt-6">
         {onBack ? (
-          <button type="button" onClick={onBack} className="gc-label text-cobalt">
+          <button type="button" onClick={onBack} className="gc-label gc-link pb-0.5">
             Back
           </button>
         ) : (
-          <span className="gc-label text-ink/30">Beginning</span>
+          <span className="gc-label text-ink/35">Beginning</span>
         )}
         <button type="submit" className="gc-btn" disabled={!canContinue || submitting}>
           <span className="gc-btn-label">{submitting ? "Saving" : nextLabel}</span>

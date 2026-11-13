@@ -1,24 +1,24 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { Image } from "@/components/ui/image";
 
-const TITLE = "A chapter nobody thought to plan for.";
+const TITLE = "a chapter nobody thought to plan for.";
 
-const PHOTOS = [
+const DRAWINGS = [
   {
-    src: "https://media.base44.com/images/public/6af66f925ddaabe6b3b327a8/6f0d6760c_generated_image.png",
-    alt: "A hand thrown stoneware bowl on a plaster surface",
+    src: "https://goodchaptercollective.com/brand/mugs-burgundy.png",
+    alt: "Drawing of two mugs.",
     modifier: "gc-hero-photo--1",
   },
   {
-    src: "https://media.base44.com/images/public/6af66f925ddaabe6b3b327a8/daef5a4c4_generated_image.png",
-    alt: "A folded linen throw with a green stripe",
+    src: "https://goodchaptercollective.com/brand/toaster-burgundy.png",
+    alt: "Drawing of a toaster with two slices of toast.",
     modifier: "gc-hero-photo--2",
   },
   {
-    src: "https://media.base44.com/images/public/6af66f925ddaabe6b3b327a8/74f69bf17_generated_image.png",
-    alt: "A brass reading lamp beside a clothbound book",
+    src: "https://goodchaptercollective.com/brand/blanket-burgundy.png",
+    alt: "Drawing of a folded blanket.",
     modifier: "gc-hero-photo--3",
   },
 ];
@@ -45,7 +45,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section aria-label="Good Chapter" className={`gc-hero ${anim ? "gc-hero-anim" : ""}`}>
+    <section aria-label="Good Chapter Co." className={`gc-hero ${anim ? "gc-hero-anim" : ""}`}>
       <div className="gc-hero-inner">
         <div className="gc-hero-head">
           <h1 className="gc-hero-title">
@@ -66,10 +66,14 @@ export default function Hero() {
         </div>
 
         <div className="gc-hero-gallery">
-          {PHOTOS.map((photo) => (
-            <div key={photo.src} className={`gc-hero-photo ${photo.modifier}`}>
+          {DRAWINGS.map((drawing) => (
+            <div key={drawing.src} className={`gc-hero-photo ${drawing.modifier}`}>
               <figure className="gc-hero-frame">
-                <Image src={photo.src} alt={photo.alt} className="h-full w-full" />
+                <Image
+                  src={drawing.src}
+                  alt={drawing.alt}
+                  className="h-full w-full object-contain p-[8%]"
+                />
               </figure>
             </div>
           ))}

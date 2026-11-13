@@ -8,7 +8,7 @@ const days = (value) => (value === 0 ? "Today" : `${value}`);
 export default function ChapterTable({ chapters }) {
   if (!chapters.length) {
     return (
-      <p className="py-10 text-ink/70">
+      <p className="py-10 max-w-[52ch] text-[19px] leading-[1.38] text-ink/75">
         No chapters yet. One appears here as soon as a starter finishes the questions.
       </p>
     );
@@ -18,7 +18,7 @@ export default function ChapterTable({ chapters }) {
     <div className="overflow-x-auto">
       <table className="w-full min-w-[760px] border-collapse text-left">
         <thead>
-          <tr className="border-y-2 border-ink">
+          <tr className="border-y border-ink">
             {COLUMNS.map((column) => (
               <th key={column} className="gc-label py-3 pr-4 font-normal text-ink/60">
                 {column}
@@ -30,13 +30,13 @@ export default function ChapterTable({ chapters }) {
           {chapters.map((chapter) => (
             <tr
               key={chapter.id}
-              className="border-b-2 border-ink/15 transition-colors hover:bg-ink hover:text-plaster"
+              className="border-b border-ink/25 transition-colors hover:bg-ink hover:text-plaster"
             >
               <td className="py-4 pr-4 align-top">
                 <Link
                   to="/desk/$chapterId"
                   params={{ chapterId: chapter.id }}
-                  className="font-heading text-[19px] leading-tight"
+                  className="font-heading text-[22px] leading-tight"
                 >
                   {chapter.person_name}
                 </Link>
@@ -44,16 +44,18 @@ export default function ChapterTable({ chapters }) {
                   <span className="gc-label ml-2 text-ink/50">Sample</span>
                 ) : null}
                 {chapter.reference ? (
-                  <p className="gc-label mt-1 text-ink/45">{chapter.reference}</p>
+                  <p className="gc-spec mt-1 text-ink/50">{chapter.reference}</p>
                 ) : null}
               </td>
-              <td className="py-4 pr-4 align-top text-[15px]">{chapter.chapter_type}</td>
-              <td className="py-4 pr-4 align-top text-[15px]">{chapter.starter_name || "—"}</td>
-              <td className="py-4 pr-4 align-top text-[15px]">
+              <td className="py-4 pr-4 align-top text-[17px]">{chapter.chapter_type}</td>
+              <td className="py-4 pr-4 align-top text-[17px]">
+                {chapter.starter_name || "None given"}
+              </td>
+              <td className="py-4 pr-4 align-top text-[17px]">
                 {CHAPTER_STATE_LABELS[chapter.state] || chapter.state}
               </td>
-              <td className="py-4 pr-4 align-top font-mono text-[13px]">
-                {days(chapter.days_in_state)}
+              <td className="py-4 pr-4 align-top">
+                <span className="gc-spec">{days(chapter.days_in_state)}</span>
               </td>
             </tr>
           ))}

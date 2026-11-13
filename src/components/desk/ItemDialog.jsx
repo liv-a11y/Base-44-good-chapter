@@ -59,9 +59,9 @@ export default function ItemDialog({ mode, item, saving, onClose, onSubmit }) {
 
   return (
     <Dialog open onOpenChange={(open) => (!open && !saving ? onClose() : null)}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto border-2 border-ink bg-paper sm:max-w-[540px]">
+      <DialogContent className="max-h-[90vh] overflow-y-auto rounded-none border border-ink bg-paper sm:max-w-[540px]">
         <DialogHeader>
-          <DialogTitle className="font-heading text-[24px] font-normal">
+          <DialogTitle className="font-heading text-[26px] font-normal">
             {mode === "replace" ? "Replace this item" : "Add an item"}
           </DialogTitle>
         </DialogHeader>
@@ -87,20 +87,22 @@ export default function ItemDialog({ mode, item, saving, onClose, onSubmit }) {
                 <Image
                   src={form.photo_url}
                   alt=""
-                  className="h-16 w-16 shrink-0 border-2 border-ink object-cover"
+                  className="h-16 w-16 shrink-0 border border-ink object-cover"
                 />
               ) : (
-                <div className="h-16 w-16 shrink-0 border-2 border-ink/25 bg-plaster" />
+                <div className="h-16 w-16 shrink-0 border border-ink/30 bg-plaster" />
               )}
               <div className="min-w-0 flex-1">
                 <input
                   type="file"
                   accept="image/*"
                   onChange={(event) => upload(event.target.files?.[0])}
-                  className="block w-full text-[13px] text-ink/70"
+                  className="block w-full text-[15px] text-ink/75"
                 />
                 <p className="gc-label mt-1 text-ink/40">
-                  {uploading ? "Uploading" : "Stored publicly — anyone with the link can open it"}
+                  {uploading
+                    ? "Uploading"
+                    : "Stored publicly. Anyone with the link can open it"}
                 </p>
               </div>
             </div>
@@ -184,10 +186,10 @@ export default function ItemDialog({ mode, item, saving, onClose, onSubmit }) {
             </div>
           ) : null}
 
-          {error ? <p className="text-[15px] text-clay">{error}</p> : null}
+          {error ? <p className="text-[17px] leading-[1.35] text-clay">{error}</p> : null}
 
           <div className="flex items-center justify-between gap-4 pt-2">
-            <button type="button" onClick={onClose} className="gc-label text-ink/55">
+            <button type="button" onClick={onClose} className="gc-label gc-link pb-0.5">
               Cancel
             </button>
             <button type="submit" disabled={saving || uploading} className="gc-btn">

@@ -20,7 +20,7 @@ export default function TypeStep({ form, update, onNext, onBack }) {
             aria-pressed={form.chapterType === type}
             onClick={() => update({ chapterType: type })}
           >
-            <span className="gc-label w-6 shrink-0 opacity-60">{String(index + 1).padStart(2, "0")}</span>
+            <span className="gc-spec w-6 shrink-0 opacity-70">{String(index + 1).padStart(2, "0")}</span>
             <span>{type}</span>
           </button>
         ))}

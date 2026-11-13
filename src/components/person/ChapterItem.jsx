@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { Image } from "@/components/ui/image";
+import DrawingPlaceholder from "@/components/site/DrawingPlaceholder";
 import { answerItem } from "@/lib/server-fns";
 
 const money = (value) => (value == null ? "" : `$${value}`);
@@ -38,21 +39,23 @@ export default function ChapterItem({ token, item, index, open }) {
   const given = item.status === "given";
 
   return (
-    <article className="flex flex-col border-2 border-ink bg-paper">
+    <article className="flex flex-col border border-ink bg-paper">
       {item.photo_url ? (
         <Image
           src={item.photo_url}
           alt={item.name}
-          className="h-44 w-full border-b-2 border-ink object-cover"
+          className="h-44 w-full border-b border-ink object-cover"
         />
-      ) : null}
-      <div className="flex flex-1 flex-col p-4">
-        <p className="gc-label text-ink/40">{String(index + 1).padStart(2, "0")}</p>
-        <h2 className="font-heading text-[20px] leading-tight">{item.name}</h2>
-        <p className="mt-1 text-[15px] leading-relaxed text-ink/75">{item.why}</p>
-        <div className="mt-3 flex items-center justify-between gap-3">
-          <span className="gc-label text-ink/40">{item.source}</span>
-          <span className="font-mono text-[13px]">{money(item.price)}</span>
+      ) : (
+        <DrawingPlaceholder label="Drawing to come" className="h-44 w-full border-x-0 border-t-0" />
+      )}
+      <div className="flex flex-1 flex-col p-5">
+        <p className="gc-spec text-ink/50">{String(index + 1).padStart(2, "0")}</p>
+        <h2 className="mt-2 text-[26px] leading-[1.05]">{item.name}</h2>
+        <p className="mt-2 text-[19px] leading-[1.35] text-ink/85">{item.why}</p>
+        <div className="mt-3 flex items-baseline justify-between gap-3">
+          <span className="gc-label text-ink/45">{item.source}</span>
+          <span className="gc-spec text-ink">{money(item.price)}</span>
         </div>
 
         <div className="mt-auto pt-4">
@@ -63,7 +66,7 @@ export default function ChapterItem({ token, item, index, open }) {
               <div className="flex gap-2">
                 <button
                   type="button"
-                  className="gc-option flex-1 justify-center px-3 py-2 text-[15px]"
+                  className="gc-option flex-1 justify-center px-3 py-2 text-[17px]"
                   aria-pressed={status === "approved"}
                   disabled={Boolean(busy)}
                   onClick={() => decide("approved")}
@@ -72,7 +75,7 @@ export default function ChapterItem({ token, item, index, open }) {
                 </button>
                 <button
                   type="button"
-                  className="gc-option flex-1 justify-center px-3 py-2 text-[15px]"
+                  className="gc-option flex-1 justify-center px-3 py-2 text-[17px]"
                   aria-pressed={status === "declined"}
                   disabled={Boolean(busy)}
                   onClick={() => decide("declined")}
@@ -81,7 +84,7 @@ export default function ChapterItem({ token, item, index, open }) {
                 </button>
               </div>
               {error ? (
-                <p className="mt-2 text-[13px] leading-snug text-clay">{error}</p>
+                <p className="mt-2 text-[15px] leading-snug text-clay">{error}</p>
               ) : status ? (
                 <p className="gc-label mt-2 text-ink/50">{ANSWER_WORDS[status]}</p>
               ) : null}

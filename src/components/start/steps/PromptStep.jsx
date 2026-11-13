@@ -28,7 +28,7 @@ export default function PromptStep({
         placeholder={placeholder}
         rows={4}
       />
-      <p className="gc-label mt-2 text-right text-ink/40">{value.length} / 300</p>
+      <p className="gc-spec mt-2 text-right text-ink/50">{value.length} / 300</p>
     </StartQuestion>
   );
 }

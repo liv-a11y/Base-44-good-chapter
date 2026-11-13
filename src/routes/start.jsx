@@ -13,7 +13,7 @@ import DoneStep from "@/components/start/steps/DoneStep";
 export const Route = createFileRoute("/start")({
   head: () => ({
     meta: [
-      { title: "Start a chapter | Good Chapter" },
+      { title: "Start a chapter | Good Chapter Co." },
       {
         name: "description",
         content: "Answer a few questions about the person. A curator builds eight things. Nothing is sent until they say yes.",
@@ -141,7 +141,7 @@ function StartPage() {
 
   return (
     <StartLayout step={result ? TOTAL - 1 : step} total={TOTAL}>
-      {submitting ? <p className="gc-label mb-6 text-ink/50">Saving</p> : null}
+      {submitting ? <p className="gc-label mb-6 text-ink/55">Saving</p> : null}
       {screen}
     </StartLayout>
   );

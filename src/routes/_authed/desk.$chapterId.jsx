@@ -27,14 +27,14 @@ function ChapterPage() {
 
   return (
     <DeskShell>
-      <Link to="/desk" className="gc-label text-cobalt">
+      <Link to="/desk" className="gc-label gc-link pb-0.5">
         All chapters
       </Link>
 
-      <div className="mt-4 flex flex-col gap-6 border-b-2 border-ink pb-5 sm:flex-row sm:items-end sm:justify-between">
+      <div className="mt-4 flex flex-col gap-6 border-b border-ink pb-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-[36px] leading-none">{chapter.person_name}</h1>
-          <p className="gc-label mt-2 text-ink/55">
+          <h1 className="text-[clamp(32px,4vw,52px)]">{chapter.person_name}</h1>
+          <p className="gc-label mt-3 text-ink/55">
             {chapter.chapter_type}
             {chapter.reference ? ` · ${chapter.reference}` : ""} ·{" "}
             {CHAPTER_STATE_LABELS[chapter.state] || chapter.state}

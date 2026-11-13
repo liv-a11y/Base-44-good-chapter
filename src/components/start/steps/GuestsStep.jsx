@@ -47,7 +47,7 @@ export default function GuestsStep({ form, update, onNext, onBack, error }) {
                 type="button"
                 aria-label={`Remove guest ${index + 1}`}
                 onClick={() => update({ guests: rows.filter((_, i) => i !== index) })}
-                className="gc-label flex h-[54px] w-[54px] shrink-0 items-center justify-center border-2 border-ink text-ink transition-colors hover:bg-ink hover:text-plaster"
+                className="gc-label flex h-[54px] w-[54px] shrink-0 items-center justify-center border border-ink text-ink transition-colors hover:bg-ink hover:text-plaster"
               >
                 <X size={16} strokeWidth={1.8} />
               </button>
@@ -64,7 +64,7 @@ export default function GuestsStep({ form, update, onNext, onBack, error }) {
         <Plus size={14} strokeWidth={2} /> Add another guest
       </button>
 
-      <p className="mt-6 text-[15px] leading-relaxed text-ink/60">
+      <p className="mt-6 max-w-[44ch] text-[17px] leading-[1.38] text-ink/65">
         No phone numbers, no messaging. Guests hear from you once, by email, and only after the person
         says yes.
       </p>

@@ -11,7 +11,7 @@ export const Route = createFileRoute("/chapter/$token")({
   },
   head: ({ loaderData }) => ({
     meta: [
-      { title: `${loaderData?.person_name ?? "Your chapter"} | Good Chapter` },
+      { title: `${loaderData?.person_name ?? "Your chapter"} | Good Chapter Co.` },
       {
         name: "description",
         content: "Eight things chosen for you, one at a time, with a reason written next to each.",
@@ -29,30 +29,28 @@ function PersonChapter() {
 
   return (
     <div className="min-h-screen bg-plaster">
-      <header className="border-b-2 border-ink">
-        <div className="mx-auto flex w-full max-w-[860px] items-center justify-between gap-6 px-6 py-5">
-          <Wordmark />
-          <span className="gc-label text-ink/50">Your private link</span>
+      <header className="bg-ink">
+        <div className="mx-auto flex w-full max-w-[900px] items-center justify-between gap-6 px-6 py-5">
+          <Wordmark tone="reverse" />
+          <span className="gc-label text-plaster/70">Your private link</span>
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-[860px] px-6 pb-24 pt-12">
+      <main className="mx-auto w-full max-w-[900px] px-6 pb-24 pt-12">
         <p className="gc-label text-ink/50">{chapter.chapter_type}</p>
-        <h1 className="mt-3 text-[clamp(2rem,6vw,3rem)] leading-[1.05]">
-          {first}, this is yours.
-        </h1>
-        <p className="mt-4 max-w-[560px] text-[17px] leading-relaxed text-ink/80">
-          Eight things, chosen one at a time, each with the reason it was chosen for you. Read
-          them in your own time. Nothing reaches your guests until you have answered.
+        <h1 className="gc-loud mt-4 text-[clamp(40px,8vw,84px)]">this is yours.</h1>
+        <p className="mt-6 max-w-[46ch] text-[21px] leading-[1.38] text-ink/85">
+          {first}, eight things, chosen one at a time, each with the reason it was chosen for you.
+          Read them in your own time. Nothing reaches your guests until you have answered.
         </p>
 
         {chapter.story_line ? (
-          <p className="mt-6 border-l-2 border-ink pl-4 font-heading text-[19px] leading-snug">
+          <p className="mt-8 max-w-[44ch] border-l border-ink pl-4 font-heading text-[26px] leading-[1.15]">
             {chapter.story_line}
           </p>
         ) : null}
 
-        <div className="mt-10 grid gap-4 sm:grid-cols-2">
+        <div className="mt-12 grid gap-5 sm:grid-cols-2">
           {chapter.items.map((item, index) => (
             <ChapterItem
               key={item.id}
@@ -64,7 +62,7 @@ function PersonChapter() {
           ))}
         </div>
 
-        <p className="gc-label mt-10 text-ink/45">
+        <p className="gc-label mt-12 text-ink/45">
           Keep this link to yourself. It is the only copy.
         </p>
       </main>
