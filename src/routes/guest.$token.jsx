@@ -54,7 +54,9 @@ function GuestChapter() {
           <p className="mt-6 max-w-[44ch] border-l border-ink pl-4 text-[21px] leading-[1.4]">
             {chapter.state === "closed"
               ? "This chapter is closed. Nothing more is needed from you."
-              : "This chapter has not gone out yet. Your link will work once it does."}
+              : chapter.accepted
+                ? "This chapter has not gone out yet. Your link will work once it does."
+                : "The person has not said yes to this chapter yet, so nothing is open. Your link will work once they do."}
           </p>
         )}
 

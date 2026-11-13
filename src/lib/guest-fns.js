@@ -4,6 +4,9 @@ import { z } from "zod";
 /** Guests only ever see a chapter once it has gone out to them. */
 const OPEN_STATE = "sent_to_guests";
 
+/** And never before the person has answered the letter. */
+const personSaidYes = (chapter) => (chapter.person_decision || "pending") === "accepted";
+
 /** The person's yes is the only thing that makes an item visible to guests. */
 const VISIBLE = ["approved", "given"];
 
@@ -48,7 +51,8 @@ export const getGuestChapter = createServerFn({ method: "GET" })
       starter_name: chapter.starter_name || "A friend",
       chapter_type: chapter.chapter_type,
       state: chapter.state,
-      open: chapter.state === OPEN_STATE,
+      open: chapter.state === OPEN_STATE && personSaidYes(chapter),
+      accepted: personSaidYes(chapter),
       guest_name: guest.name,
       items: (itemPage.items ?? itemPage)
         .filter((item) => VISIBLE.includes(item.status))
@@ -60,6 +64,7 @@ export const getGuestChapter = createServerFn({ method: "GET" })
             photo_url: item.photo_url || "",
             price: item.price ?? null,
             source: item.source || "",
+            source_url: item.source_url || "",
             why: item.why || "",
             claim: claim
               ? {
@@ -92,7 +97,7 @@ export const claimItem = createServerFn({ method: "POST" })
     if (!guest) return { ok: false };
 
     const chapter = await findChapter(service, guest.chapter_id);
-    if (!chapter || chapter.state !== OPEN_STATE) return { ok: false };
+    if (!chapter || chapter.state !== OPEN_STATE || !personSaidYes(chapter)) return { ok: false };
 
     const item = await service.entities.Item.get(data.item_id).catch((error) => {
       if (error?.status === 404) return null;

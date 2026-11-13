@@ -17,6 +17,36 @@
       "type": "string",
       "description": "Private link token. The person is the only one who receives it."
     },
+    "accept_token": {
+      "type": "string",
+      "description": "Single purpose token for the accept button in the letter. Replaced every time the chapter is sent."
+    },
+    "decline_token": {
+      "type": "string",
+      "description": "Single purpose token for the send it back button in the letter. Replaced every time the chapter is sent."
+    },
+    "person_decision": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "accepted",
+        "declined"
+      ],
+      "enumColors": [
+        "yellow",
+        "green",
+        "red"
+      ],
+      "default": "pending",
+      "description": "The person answers first. Nothing reaches the guests before an answer."
+    },
+    "person_decided_at": {
+      "type": "string"
+    },
+    "person_decline_reason": {
+      "type": "string",
+      "description": "Optional words from the person when they send the chapter back."
+    },
     "chapter_type": {
       "type": "string",
       "enum": [

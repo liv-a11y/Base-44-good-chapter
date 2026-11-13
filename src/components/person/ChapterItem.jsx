@@ -12,7 +12,7 @@ const ANSWER_WORDS = {
 };
 
 /** One of the eight, on the person's own link, with their approve or decline. */
-export default function ChapterItem({ token, item, index, open }) {
+export default function ChapterItem({ token, item, index, open, awaiting }) {
   const answer = useServerFn(answerItem);
   const saved = item.status === "approved" || item.status === "declined" ? item.status : "";
   const [status, setStatus] = useState(saved);
@@ -58,6 +58,17 @@ export default function ChapterItem({ token, item, index, open }) {
           <span className="gc-spec text-ink">{money(item.price)}</span>
         </div>
 
+        {item.source_url && (status || item.status) === "approved" ? (
+          <a
+            href={item.source_url}
+            target="_blank"
+            rel="noreferrer"
+            className="gc-label gc-link mt-2 self-start pb-0.5 text-[13px]"
+          >
+            Find it at {item.source || "the shop"}
+          </a>
+        ) : null}
+
         <div className="mt-auto pt-4">
           {given ? (
             <p className="gc-label text-ink/50">Already given.</p>
@@ -92,7 +103,9 @@ export default function ChapterItem({ token, item, index, open }) {
           ) : status ? (
             <p className="gc-label text-ink/50">{ANSWER_WORDS[status]}</p>
           ) : (
-            <p className="gc-label text-ink/50">Answers are closed.</p>
+            <p className="gc-label text-ink/50">
+              {awaiting ? "Say yes and you can answer this." : "Answers are closed."}
+            </p>
           )}
         </div>
       </div>

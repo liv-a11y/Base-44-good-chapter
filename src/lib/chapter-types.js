@@ -32,6 +32,13 @@ export const CHAPTER_STATE_LABELS = {
   declined: "Declined",
 };
 
+/** The person answers first: pending, accepted, or sent back. */
+export const DECISION_LABELS = {
+  pending: "Waiting on the person",
+  accepted: "Person said yes",
+  declined: "Sent back by the person",
+};
+
 /** The one button the desk offers: the next state, and what to call it. */
 export const NEXT_STEP_LABELS = {
   started: "Curating",

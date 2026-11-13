@@ -3,6 +3,7 @@ import { getChapter } from "@/lib/curator-fns";
 import { CHAPTER_STATE_LABELS } from "@/lib/chapter-types";
 import DeskShell from "@/components/desk/DeskShell";
 import AnswersPanel from "@/components/desk/AnswersPanel";
+import DecisionPanel from "@/components/desk/DecisionPanel";
 import ItemSlots from "@/components/desk/ItemSlots";
 import StateBar from "@/components/desk/StateBar";
 
@@ -44,7 +45,10 @@ function ChapterPage() {
       </div>
 
       <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)]">
-        <AnswersPanel chapter={chapter} guests={guests} reasons={reasons} />
+        <div>
+          <AnswersPanel chapter={chapter} guests={guests} reasons={reasons} />
+          <DecisionPanel chapter={chapter} />
+        </div>
         <ItemSlots chapterId={chapter.id} items={items} />
       </div>
     </DeskShell>

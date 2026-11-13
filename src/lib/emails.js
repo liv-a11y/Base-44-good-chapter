@@ -19,7 +19,7 @@ const escape = (value) =>
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 
-const wrap = (paragraphs, signoff) => {
+const wrap = (paragraphs, signoff, actions = "") => {
   const body = paragraphs
     .map((paragraph) =>
       paragraph === ""
@@ -38,7 +38,7 @@ const wrap = (paragraphs, signoff) => {
 <tr><td style="padding:26px 28px 20px;border-bottom:1.5px solid #651C1A">
 <span style="font-family:'Fraunces',Georgia,serif;font-size:20px;letter-spacing:-0.01em;color:#651C1A">${LOCKUP}</span>
 </td></tr>
-<tr><td style="padding:28px 28px 8px">${body}</td></tr>
+<tr><td style="padding:28px 28px 8px">${body}${actions}</td></tr>
 <tr><td style="padding:0 28px 26px">
 <p style="margin:0;font-family:'EB Garamond',Garamond,Georgia,serif;font-size:13px;letter-spacing:0.24em;text-transform:uppercase;color:#651C1A">${escape(
     signoff || TAGLINE,
@@ -52,8 +52,17 @@ const wrap = (paragraphs, signoff) => {
 
 const join = (lines) => lines.join("\n");
 
+/** The two answers, as buttons in the letter. One cobalt, one drawn in ink. */
+const decisionButtons = (acceptLink, declineLink, starter) => `<table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:separate;margin:6px 0 22px">
+<tr><td style="background:#284CD6;border-radius:4px"><a href="${acceptLink}" style="display:inline-block;padding:15px 26px;font-family:'DM Sans',Helvetica,Arial,sans-serif;font-size:14px;font-weight:700;letter-spacing:0.04em;color:#F8EBDA;text-decoration:none">Accept this chapter</a></td></tr>
+<tr><td style="height:10px;line-height:10px">&nbsp;</td></tr>
+<tr><td style="border:1.5px solid #651C1A;border-radius:4px"><a href="${declineLink}" style="display:inline-block;padding:14px 26px;font-family:'DM Sans',Helvetica,Arial,sans-serif;font-size:14px;font-weight:700;letter-spacing:0.04em;color:#651C1A;text-decoration:none">Send it back to ${escape(
+  starter,
+)}</a></td></tr>
+</table>`;
+
 /** 1. The private link, sent to the person when the chapter is ready for them. */
-export const personLinkEmail = ({ chapter, link }) => {
+export const personLinkEmail = ({ chapter, link, acceptLink, declineLink }) => {
   const person = firstName(chapter?.person_name, "there");
   const starter = (chapter?.starter_name || "").trim();
   const opener = starter
@@ -67,14 +76,18 @@ export const personLinkEmail = ({ chapter, link }) => {
     "",
     "It is not a registry. There is nothing to browse and nothing picked from a catalogue. Eight things, chosen one at a time, with the reason written next to each one.",
     "",
-    "You see it before anyone else does, and nothing reaches your guests until you have read it and said yes.",
+    "You see it before anyone else does. Nothing reaches the people you named until you have answered.",
     "",
-    "Your private link:",
+    "Two buttons, one answer:",
+    `Accept it: ${acceptLink}`,
+    `Send it back: ${declineLink}`,
+    "",
+    "If you would rather read the list first, it is here:",
     link,
     "",
     "Keep it to yourself. It is the only copy.",
     "",
-    "— Good Chapter",
+    "From Good Chapter",
     TAGLINE,
   ]);
 
@@ -86,11 +99,10 @@ export const personLinkEmail = ({ chapter, link }) => {
         `${person},`,
         opener,
         "It is not a registry. There is nothing to browse and nothing picked from a catalogue. Eight things, chosen one at a time, with the reason written next to each one.",
-        "You see it before anyone else does, and nothing reaches your guests until you have read it and said yes.",
-        `Your private link: ${link}`,
-        "Keep it to yourself. It is the only copy.",
+        "You see it before anyone else does. Nothing reaches the people you named until you have answered.",
       ],
       TAGLINE,
+      `${decisionButtons(acceptLink, declineLink, starter || "them")}<p style="margin:0 0 16px;font-family:'EB Garamond',Garamond,Georgia,serif;font-size:19px;line-height:1.4;color:#651C1A">If you would rather read the list first, it is here: <a href="${link}" style="color:#651C1A">${link}</a></p><p style="margin:0 0 16px;font-family:'EB Garamond',Garamond,Georgia,serif;font-size:19px;line-height:1.4;color:#651C1A">Keep it to yourself. It is the only copy.</p>`,
     ),
   };
 };

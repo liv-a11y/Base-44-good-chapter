@@ -55,6 +55,17 @@ export default function GuestItem({ item, index, open, onClaim }) {
           <span className="gc-spec shrink-0 text-ink">{money(item.price)}</span>
         </div>
 
+        {item.source_url ? (
+          <a
+            href={item.source_url}
+            target="_blank"
+            rel="noreferrer"
+            className="gc-label gc-link mt-2 self-start pb-0.5 text-[13px]"
+          >
+            Find it at {item.source || "the shop"}
+          </a>
+        ) : null}
+
         <div className="mt-auto pt-4">
           {claim ? (
             <div className="border-t border-ink/25 pt-4">

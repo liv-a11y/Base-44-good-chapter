@@ -16,6 +16,9 @@ export default function StateBar({ chapter, itemCount }) {
 
   const next = NEXT_STEP_LABELS[chapter.state];
   const needsEight = next === "With the person" && itemCount !== EIGHT;
+  const accepted = (chapter.person_decision || "pending") === "accepted";
+  const waitingOnPerson =
+    !accepted && (chapter.state === "with_person_items" || chapter.state === "with_person_guests");
 
   const move = async () => {
     setBusy(true);
@@ -59,7 +62,12 @@ export default function StateBar({ chapter, itemCount }) {
     <div className="flex flex-col items-start gap-3 sm:items-end">
       {next ? (
         <>
-          <button type="button" onClick={move} disabled={busy || needsEight} className="gc-btn">
+          <button
+            type="button"
+            onClick={move}
+            disabled={busy || needsEight || waitingOnPerson}
+            className="gc-btn"
+          >
             <span className="gc-btn-label">{busy ? "Moving" : `Move to ${next}`}</span>
             <span className="gc-btn-arrow" aria-hidden="true">
               →
@@ -67,6 +75,11 @@ export default function StateBar({ chapter, itemCount }) {
           </button>
           {needsEight ? (
             <p className="gc-label text-ink/50">The person sees eight items, not {itemCount}</p>
+          ) : null}
+          {waitingOnPerson ? (
+            <p className="gc-label max-w-[280px] text-right text-ink/50">
+              Nothing goes to the guests until the person has answered
+            </p>
           ) : null}
         </>
       ) : (

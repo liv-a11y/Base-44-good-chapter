@@ -158,13 +158,31 @@ export const getChapterByToken = createServerFn({ method: "GET" })
       { sort: "position", limit: EIGHT },
     );
 
+    const decision = chapter.person_decision || "pending";
+    /** A letter with buttons went out and has not been answered: the list is read only. */
+    const awaiting = Boolean(chapter.accept_token) && decision === "pending";
+
     return {
       person_name: chapter.person_name,
       chapter_type: chapter.chapter_type,
       story_line: chapter.story_line,
       state: chapter.state,
       is_sample: Boolean(chapter.is_sample),
-      answers_open: ANSWERS_OPEN_STATES.includes(chapter.state),
+      starter_name: chapter.starter_name || "",
+      person_decision: decision,
+      decided_on: chapter.person_decided_at
+        ? new Date(chapter.person_decided_at).toLocaleDateString("en-US", {
+            timeZone: "UTC",
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+          })
+        : "",
+      await_answer: awaiting,
+      accept_token: awaiting ? chapter.accept_token : "",
+      decline_token: awaiting ? chapter.decline_token || "" : "",
+      answers_open:
+        ANSWERS_OPEN_STATES.includes(chapter.state) && !awaiting && decision !== "declined",
       items: (itemPage.items ?? itemPage).map((item) => ({
         id: item.id,
         name: item.name,
@@ -200,6 +218,9 @@ export const answerItem = createServerFn({ method: "POST" })
     );
     const chapter = (chapterPage.items ?? chapterPage)[0];
     if (!chapter || !ANSWERS_OPEN_STATES.includes(chapter.state)) return { ok: false };
+    if (chapter.accept_token && (chapter.person_decision || "pending") === "pending") {
+      return { ok: false };
+    }
 
     const item = await service.entities.Item.get(data.itemId).catch((error) => {
       if (error.status === 404) return null;

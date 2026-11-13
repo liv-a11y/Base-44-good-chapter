@@ -1,4 +1,4 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { getChapterByToken } from "@/lib/server-fns";
 import Wordmark from "@/components/site/Wordmark";
 import ChapterItem from "@/components/person/ChapterItem";
@@ -44,6 +44,49 @@ function PersonChapter() {
           Read them in your own time. Nothing reaches your guests until you have answered.
         </p>
 
+        {chapter.await_answer ? (
+          <div className="mt-8 max-w-[560px] border border-ink bg-paper p-6">
+            <p className="gc-label text-ink/50">Your answer first</p>
+            <p className="mt-2 text-[21px] leading-[1.35] text-ink">
+              Say yes, and the list opens to the people you named. Send it back and nothing goes
+              out at all.
+            </p>
+            <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+              <Link
+                to="/decide/$token/$answer"
+                params={{ token: chapter.accept_token, answer: "accept" }}
+                className="gc-btn"
+              >
+                <span className="gc-btn-label">Accept it</span>
+                <span className="gc-btn-arrow" aria-hidden="true">
+                  →
+                </span>
+              </Link>
+              <Link
+                to="/decide/$token/$answer"
+                params={{ token: chapter.decline_token, answer: "decline" }}
+                className="gc-label border border-ink px-5 py-3 text-center"
+              >
+                Send it back
+              </Link>
+            </div>
+          </div>
+        ) : null}
+
+        {chapter.person_decision === "accepted" ? (
+          <p className="gc-label mt-8 text-ink/55">
+            You said yes{chapter.decided_on ? ` on ${chapter.decided_on}` : ""}. The list is open to
+            the people you named.
+          </p>
+        ) : null}
+
+        {chapter.person_decision === "declined" ? (
+          <p className="mt-8 max-w-[44ch] border-l border-ink pl-4 text-[21px] leading-[1.4]">
+            You sent this back{chapter.decided_on ? ` on ${chapter.decided_on}` : ""}. Nothing went
+            to the guests. Your friend can change the list and ask you again.
+          </p>
+        ) : null}
+
         {chapter.story_line ? (
           <p className="mt-8 max-w-[44ch] border-l border-ink pl-4 font-heading text-[26px] leading-[1.15]">
             {chapter.story_line}
@@ -58,6 +101,7 @@ function PersonChapter() {
               item={item}
               index={index}
               open={chapter.answers_open}
+              awaiting={chapter.await_answer}
             />
           ))}
         </div>

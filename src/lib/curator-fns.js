@@ -274,8 +274,33 @@ const sendGuestLinks = async (service, chapter, origin) => {
 };
 
 /**
+ * A chapter the person sent back goes to the curator again. The next send makes
+ * fresh tokens, so the letter that was declined stops working.
+ */
+export const reopenChapter = createServerFn({ method: "POST" })
+  .middleware([requireUser])
+  .validator(z.object({ chapter_id: z.string().min(1) }))
+  .handler(async ({ data, context }) => {
+    const service = serviceFor(context);
+
+    const chapter = await service.entities.Chapter.get(data.chapter_id);
+    if ((chapter.person_decision || "pending") !== "declined") {
+      throw Object.assign(new Error("That chapter was not sent back"), { status: 400 });
+    }
+
+    await service.entities.Chapter.update(chapter.id, {
+      state: "curating",
+      state_changed_at: new Date().toISOString(),
+      person_decision: "pending",
+      person_decided_at: "",
+    });
+
+    return { ok: true };
+  });
+
+/**
  * Walk the chapter one state forward. The move to "With the person" is the
- * moment the private link leaves the building, so it sends the letter.
+ * moment the letter leaves the building, so it asks for an answer first.
  */
 export const advanceChapter = createServerFn({ method: "POST" })
   .middleware([requireUser])
@@ -307,11 +332,24 @@ export const advanceChapter = createServerFn({ method: "POST" })
       }
     }
 
+    const accepted = (chapter.person_decision || "pending") === "accepted";
+    if ((next === "with_person_guests" || next === "sent_to_guests") && !accepted) {
+      throw Object.assign(new Error("The person has not answered yet"), { status: 400 });
+    }
+
     const personToken = chapter.person_token || newToken();
+    const acceptToken = next === "with_person_items" ? newToken() : chapter.accept_token;
+    const declineToken = next === "with_person_items" ? newToken() : chapter.decline_token;
+
     await service.entities.Chapter.update(chapter.id, {
       state: next,
       state_changed_at: new Date().toISOString(),
       person_token: personToken,
+      accept_token: acceptToken || "",
+      decline_token: declineToken || "",
+      ...(next === "with_person_items"
+        ? { person_decision: "pending", person_decided_at: "" }
+        : {}),
     });
 
     const result = { state: next, link: null, email: null };
@@ -321,10 +359,16 @@ export const advanceChapter = createServerFn({ method: "POST" })
     }
     if (next !== "with_person_items") return result;
 
-    const link = `${data.origin.replace(/\/$/, "")}/chapter/${personToken}`;
+    const base = data.origin.replace(/\/$/, "");
+    const link = `${base}/chapter/${personToken}`;
     result.link = link;
 
-    const letter = personLinkEmail({ chapter, link });
+    const letter = personLinkEmail({
+      chapter,
+      link,
+      acceptLink: `${base}/decide/${acceptToken}/accept`,
+      declineLink: `${base}/decide/${declineToken}/decline`,
+    });
     try {
       await service.integrations.Core.SendEmail({
         to: chapter.person_email,
