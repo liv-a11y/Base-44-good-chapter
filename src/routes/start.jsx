@@ -14,6 +14,7 @@ import InterviewStep from "@/components/start/steps/InterviewStep";
 import AnchorStep from "@/components/start/steps/AnchorStep";
 import PoolStep from "@/components/start/steps/PoolStep";
 import DoneStep from "@/components/start/steps/DoneStep";
+import GiftPanel from "@/components/start/GiftPanel";
 
 export const Route = createFileRoute("/start")({
   head: () => ({
@@ -27,6 +28,9 @@ export const Route = createFileRoute("/start")({
   }),
   component: StartPage,
 });
+
+/** Steps that show the live shop panel beside the question. */
+const PANEL_STEPS = ["prompt1", "prompt2", "prompt3", "anchor", "pool"];
 
 /** A set amount skips the interview and the anchor. Everything else is shared. */
 const stepsFor = (path) => [
@@ -67,6 +71,7 @@ function StartPage() {
   const [result, setResult] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
 
   const steps = stepsFor(form.path);
   const current = steps[Math.min(step, steps.length - 1)];
@@ -101,6 +106,7 @@ function StartPage() {
           ...form,
           poolAmount: BUDGET_PATHS.includes(form.path) ? Number(form.poolAmount) : undefined,
           guests,
+          items: suggestions,
         },
       });
       setResult(response);
@@ -179,8 +185,22 @@ function StartPage() {
     );
   }
 
+  const panel = PANEL_STEPS.includes(current) ? (
+    <GiftPanel
+      answers={{
+        alwaysWears: form.alwaysWears,
+        rewatches: form.rewatches,
+        neverBuys: form.neverBuys,
+        chapterType: form.chapterType,
+        anchorIdea: form.anchorIdea,
+        cap: BUDGET_PATHS.includes(form.path) ? Number(form.poolAmount) || 0 : 0,
+      }}
+      onChange={setSuggestions}
+    />
+  ) : null;
+
   return (
-    <StartLayout step={result ? steps.length - 1 : step} total={steps.length}>
+    <StartLayout step={result ? steps.length - 1 : step} total={steps.length} panel={panel}>
       {submitting ? <p className="gc-label mb-6 text-ink/55">Saving</p> : null}
       {screen}
     </StartLayout>

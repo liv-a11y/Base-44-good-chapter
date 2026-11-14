@@ -80,6 +80,13 @@ export default function ItemSlots({ chapterId, items }) {
         </span>
       </div>
 
+      {items.length ? (
+        <p className="mt-2 text-[15px] leading-[1.4] text-ink/55">
+          Drafts from the shop, pulled in by what the starter answered. Read each one and replace
+          what misses before this goes to the person.
+        </p>
+      ) : null}
+
       {error ? <p className="mt-2 text-[17px] text-clay">{error}</p> : null}
 
       <div className="mt-3 space-y-3">

@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import Wordmark from "@/components/site/Wordmark";
 
-export default function StartLayout({ step, total, children }) {
+export default function StartLayout({ step, total, panel, children }) {
   const filled = Math.round(((step + 1) / total) * 100);
 
   return (
@@ -29,7 +29,16 @@ export default function StartLayout({ step, total, children }) {
         </div>
       </div>
 
-      <main className="mx-auto w-full max-w-[560px] flex-1 px-6 pb-24 pt-14 sm:pt-20">{children}</main>
+      <main className="mx-auto w-full max-w-[1100px] flex-1 px-6 pb-24 pt-14 sm:pt-20">
+        {panel ? (
+          <div className="grid gap-12 lg:grid-cols-[minmax(0,560px)_minmax(0,1fr)] lg:gap-14">
+            <div>{children}</div>
+            <aside className="lg:sticky lg:top-10 lg:self-start">{panel}</aside>
+          </div>
+        ) : (
+          <div className="mx-auto w-full max-w-[560px]">{children}</div>
+        )}
+      </main>
     </div>
   );
 }

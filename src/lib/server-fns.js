@@ -25,6 +25,16 @@ const guest = z.object({
   email,
 });
 
+/** One suggestion from the shop panel: a draft, reviewed by the curator. */
+const suggestion = z.object({
+  name: z.string().trim().min(1).max(160),
+  photo_url: z.string().trim().max(600).optional(),
+  price: z.number().min(0).max(100000).nullable().optional(),
+  source: z.string().trim().max(120).optional(),
+  source_url: z.string().trim().max(600).optional(),
+  why: z.string().trim().max(400).optional(),
+});
+
 const newChapter = z.object({
   personName: z.string().trim().min(1).max(80),
   personEmail: email,
@@ -42,6 +52,7 @@ const newChapter = z.object({
   starterName: z.string().trim().min(1).max(80),
   starterEmail: email,
   guests: z.array(guest).max(40),
+  items: z.array(suggestion).max(EIGHT).optional(),
 });
 
 const reference = () =>
@@ -134,6 +145,24 @@ export const startChapter = createServerFn({ method: "POST" })
       reference: reference(),
       person_token: personToken(),
     });
+
+    // The shop suggestions the starter saw become the draft list. Draft only:
+    // the curator reads and can replace each one before the person sees it.
+    if (data.items?.length) {
+      await service.entities.Item.bulkCreate(
+        data.items.slice(0, EIGHT).map((row, index) => ({
+          chapter_id: chapter.id,
+          position: index + 1,
+          name: row.name,
+          photo_url: row.photo_url ?? "",
+          price: row.price ?? 0,
+          source: row.source ?? "",
+          source_url: row.source_url ?? "",
+          why: row.why ?? "",
+          status: "proposed",
+        })),
+      );
+    }
 
     if (data.guests.length) {
       await service.entities.Guest.bulkCreate(
