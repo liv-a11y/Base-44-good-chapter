@@ -465,3 +465,30 @@
     animation: none;
   }
 }
+
+/* Accordion panel: the height animates with grid rows, so nothing is measured. */
+.gc-acc-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0s linear 0.4s;
+}
+
+.gc-acc-panel[data-open="true"] {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s;
+}
+
+.gc-acc-panel > div {
+  min-height: 0;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gc-acc-panel,
+  .gc-acc-panel[data-open="true"] {
+    transition: none;
+  }
+}
