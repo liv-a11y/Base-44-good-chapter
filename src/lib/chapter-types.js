@@ -12,12 +12,16 @@ export const CHAPTER_TYPES = [
   "Something else",
 ];
 
-/** How the starter opens the chapter: one gift they would give first, or a pool from work. */
-export const CHAPTER_PATHS = ["anchor_gift", "employer_pool"];
+/** How the starter opens the chapter: one gift they would give first, or an amount they build inside. */
+export const CHAPTER_PATHS = ["anchor_gift", "employer_pool", "realtor_budget"];
+
+/** The two paths that start from a set amount instead of an anchor gift. */
+export const BUDGET_PATHS = ["employer_pool", "realtor_budget"];
 
 export const PATH_LABELS = {
   anchor_gift: "An anchor gift",
   employer_pool: "A pool from work",
+  realtor_budget: "A realtor budget",
 };
 
 export const CHAPTER_STATES = [

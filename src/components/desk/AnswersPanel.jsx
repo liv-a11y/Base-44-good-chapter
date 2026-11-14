@@ -34,12 +34,16 @@ export default function AnswersPanel({ chapter, guests, reasons }) {
         <Field label="Would never buy themselves" value={chapter.never_buys} />
         <Field label="Idea kept from the interview" value={chapter.starter_ideas} />
         <Field label="How it starts" value={PATH_LABELS[chapter.path] || "An anchor gift"} />
-        {chapter.path === "employer_pool" ? (
+        {chapter.path !== "anchor_gift" ? (
           <Field
-            label="The pool"
+            label={chapter.path === "realtor_budget" ? "The realtor's budget" : "The pool"}
             value={[
-              `${MONEY(chapter.pool_amount)} per person`,
-              chapter.pool_term ? `term ${chapter.pool_term}` : "",
+              `${MONEY(chapter.pool_amount)} ${
+                chapter.path === "realtor_budget" ? "per gift" : "per person"
+              }`,
+              chapter.pool_term
+                ? `${chapter.path === "realtor_budget" ? "" : "term "}${chapter.pool_term}`
+                : "",
               chapter.pool_employer || "",
             ]
               .filter(Boolean)

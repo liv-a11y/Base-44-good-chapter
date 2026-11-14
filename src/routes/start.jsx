@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { startChapter } from "@/lib/server-fns";
+import { BUDGET_PATHS } from "@/lib/chapter-types";
 import StartLayout from "@/components/start/StartLayout";
 import PathStep from "@/components/start/steps/PathStep";
 import PersonStep from "@/components/start/steps/PersonStep";
@@ -27,7 +28,7 @@ export const Route = createFileRoute("/start")({
   component: StartPage,
 });
 
-/** The pool path skips the interview and the anchor. Everything else is shared. */
+/** A set amount skips the interview and the anchor. Everything else is shared. */
 const stepsFor = (path) => [
   "path",
   "person",
@@ -35,7 +36,7 @@ const stepsFor = (path) => [
   "prompt1",
   "prompt2",
   "prompt3",
-  ...(path === "employer_pool" ? ["pool"] : ["interview", "anchor"]),
+  ...(BUDGET_PATHS.includes(path) ? ["pool"] : ["interview", "anchor"]),
   "starter",
   "guests",
 ];
@@ -98,7 +99,7 @@ function StartPage() {
       const response = await submitChapter({
         data: {
           ...form,
-          poolAmount: form.path === "employer_pool" ? Number(form.poolAmount) : undefined,
+          poolAmount: BUDGET_PATHS.includes(form.path) ? Number(form.poolAmount) : undefined,
           guests,
         },
       });

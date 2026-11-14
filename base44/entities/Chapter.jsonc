@@ -90,14 +90,16 @@
       "type": "string",
       "enum": [
         "anchor_gift",
-        "employer_pool"
+        "employer_pool",
+        "realtor_budget"
       ],
       "enumColors": [
         "blue",
-        "green"
+        "green",
+        "yellow"
       ],
       "default": "anchor_gift",
-      "description": "How the starter opens the chapter: one gift they would give first, or a per person pool from work."
+      "description": "How the starter opens the chapter: one gift they would give first, a per person pool from work, or a realtor's set budget for anchor gifts."
     },
     "anchor_idea": {
       "type": "string",
@@ -108,11 +110,11 @@
     },
     "pool_employer": {
       "type": "string",
-      "description": "Who set the pool aside. Shown on the desk, never to a guest."
+      "description": "Who set the amount aside: the employer, or the realtor and their brokerage. Shown on the desk, never to a guest."
     },
     "pool_amount": {
       "type": "number",
-      "description": "Per person amount set at the start of the benefit term. No money moves through this site."
+      "description": "The per person amount, or the realtor's per gift budget. No money moves through this site."
     },
     "pool_term": {
       "type": "string"

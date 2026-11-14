@@ -11,13 +11,18 @@ const PATHS = [
     title: "There is a pool from work.",
     line: "Their employer set one amount per person for this benefit term. The chapter is built inside it.",
   },
+  {
+    value: "realtor_budget",
+    title: "I'm a realtor and I have a set budget for anchor gifts.",
+    line: "You set one amount per client before the chapter starts. The anchor gift and the seven after it are chosen inside it.",
+  },
 ];
 
 export default function PathStep({ form, update, onNext }) {
   return (
     <StartQuestion
       label="How it starts"
-      question="Are you anchoring one gift, or is there a pool?"
+      question="Are you anchoring one gift, or working inside a set amount?"
       hint="Either way the curator picks eight things by hand and the person approves every one. This only decides where the chapter begins."
       canContinue={Boolean(form.path)}
       onSubmit={onNext}

@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { CHAPTER_TYPES } from "@/lib/chapter-types";
+import { BUDGET_PATHS, CHAPTER_TYPES } from "@/lib/chapter-types";
 
 const EIGHT = 8;
 
@@ -33,7 +33,7 @@ const newChapter = z.object({
   rewatches: z.string().trim().max(300),
   neverBuys: z.string().trim().max(300),
   starterIdeas: z.string().trim().max(600).optional(),
-  path: z.enum(["anchor_gift", "employer_pool"]).optional(),
+  path: z.enum(["anchor_gift", "employer_pool", "realtor_budget"]).optional(),
   anchorIdea: z.string().trim().max(120).optional(),
   anchorNote: z.string().trim().max(400).optional(),
   poolEmployer: z.string().trim().max(120).optional(),
@@ -108,6 +108,10 @@ export const startChapter = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const service = context.getBase44().asServiceRole;
 
+    // A set amount starts from a number instead of an anchor gift.
+    const path = data.path ?? "anchor_gift";
+    const budget = BUDGET_PATHS.includes(path);
+
     const chapter = await service.entities.Chapter.create({
       person_name: data.personName,
       person_email: data.personEmail,
@@ -118,12 +122,12 @@ export const startChapter = createServerFn({ method: "POST" })
       rewatches: data.rewatches,
       never_buys: data.neverBuys,
       starter_ideas: data.starterIdeas ?? "",
-      path: data.path ?? "anchor_gift",
-      anchor_idea: data.path === "employer_pool" ? "" : (data.anchorIdea ?? ""),
-      anchor_note: data.path === "employer_pool" ? "" : (data.anchorNote ?? ""),
-      pool_employer: data.path === "employer_pool" ? (data.poolEmployer ?? "") : "",
-      pool_amount: data.path === "employer_pool" ? (data.poolAmount ?? 0) : 0,
-      pool_term: data.path === "employer_pool" ? (data.poolTerm ?? "") : "",
+      path,
+      anchor_idea: budget ? "" : (data.anchorIdea ?? ""),
+      anchor_note: budget ? "" : (data.anchorNote ?? ""),
+      pool_employer: budget ? (data.poolEmployer ?? "") : "",
+      pool_amount: budget ? (data.poolAmount ?? 0) : 0,
+      pool_term: budget ? (data.poolTerm ?? "") : "",
       state: "started",
       state_changed_at: new Date().toISOString(),
       is_sample: false,

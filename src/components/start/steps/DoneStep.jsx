@@ -6,10 +6,13 @@ const first = (name) => (name || "").trim().split(/\s+/)[0] || "The person";
 export default function DoneStep({ result, form, onRestart }) {
   const person = first(form.personName);
   const guestCount = form.guests.filter((row) => row.email.trim()).length;
+  const amount = `$${Number(form.poolAmount || 0).toLocaleString("en-US")}`;
   const opening =
     form.path === "employer_pool"
-      ? `$${Number(form.poolAmount || 0).toLocaleString("en-US")} per person, from ${form.poolEmployer || "work"}`
-      : form.anchorIdea || "The curator proposes the anchor";
+      ? `${amount} per person, from ${form.poolEmployer || "work"}`
+      : form.path === "realtor_budget"
+        ? `${amount} per gift, set by ${form.poolEmployer || "the realtor"}`
+        : form.anchorIdea || "The curator proposes the anchor";
 
   return (
     <div className="gc-step">
