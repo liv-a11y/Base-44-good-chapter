@@ -1,6 +1,6 @@
 {
   "name": "Guest",
-  "description": "Someone the starter named. Phone is stored only when given and is never messaged.",
+  "description": "Someone the starter named. Their private ideas stay on their own record and are never shown to another guest.",
   "type": "object",
   "properties": {
     "chapter_id": {
@@ -27,6 +27,17 @@
     "guest_token": {
       "type": "string",
       "description": "Unguessable private link token. One per guest, created when the chapter goes out."
+    },
+    "ideas": {
+      "type": "string",
+      "description": "This guest's own three ideas, stored as JSON. Only ever returned for this guest's own link."
+    },
+    "shared_idea": {
+      "type": "string",
+      "description": "The one idea this guest chose to pass to the curator. An idea, never an item."
+    },
+    "shared_idea_note": {
+      "type": "string"
     }
   },
   "required": [

@@ -108,6 +108,8 @@ export const getChapter = createServerFn({ method: "GET" })
         id: guest.id,
         name: guest.name,
         email: guest.email,
+        shared_idea: guest.shared_idea || "",
+        shared_idea_note: guest.shared_idea_note || "",
       })),
       reasons: (reasonPage.items ?? reasonPage).map((row) => ({
         id: row.id,

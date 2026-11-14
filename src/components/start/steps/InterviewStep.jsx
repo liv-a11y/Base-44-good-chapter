@@ -21,7 +21,11 @@ export default function InterviewStep({ form, update, onNext, onBack }) {
 
   const keep = (idea) => {
     setPicked(idea.name);
-    update({ starterIdeas: `${idea.name}: ${idea.why || idea.what || ""}`.trim() });
+    update({
+      starterIdeas: `${idea.name}: ${idea.why || idea.what || ""}`.trim(),
+      anchorIdea: idea.name,
+      anchorNote: [idea.what, idea.why].filter(Boolean).join(" "),
+    });
   };
 
   return (

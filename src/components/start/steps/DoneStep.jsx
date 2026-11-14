@@ -6,6 +6,10 @@ const first = (name) => (name || "").trim().split(/\s+/)[0] || "The person";
 export default function DoneStep({ result, form, onRestart }) {
   const person = first(form.personName);
   const guestCount = form.guests.filter((row) => row.email.trim()).length;
+  const opening =
+    form.path === "employer_pool"
+      ? `$${Number(form.poolAmount || 0).toLocaleString("en-US")} per person, from ${form.poolEmployer || "work"}`
+      : form.anchorIdea || "The curator proposes the anchor";
 
   return (
     <div className="gc-step">
@@ -30,6 +34,10 @@ export default function DoneStep({ result, form, onRestart }) {
         <div className="flex items-baseline justify-between gap-4 border-b border-ink px-5 py-4">
           <span className="gc-label text-ink/60">Chapter</span>
           <span className="text-[19px]">{form.chapterType}</span>
+        </div>
+        <div className="flex items-baseline justify-between gap-4 border-b border-ink px-5 py-4">
+          <span className="gc-label shrink-0 text-ink/60">How it starts</span>
+          <span className="text-right text-[19px] leading-[1.3]">{opening}</span>
         </div>
         <div className="flex items-baseline justify-between gap-4 px-5 py-4">
           <span className="gc-label text-ink/60">Guests waiting</span>

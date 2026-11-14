@@ -1,6 +1,6 @@
 import StartQuestion from "@/components/start/StartQuestion";
 
-export default function PersonStep({ form, update, onNext }) {
+export default function PersonStep({ form, update, onNext, onBack }) {
   const canContinue =
     form.personName.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.personEmail.trim());
 
@@ -11,6 +11,7 @@ export default function PersonStep({ form, update, onNext }) {
       hint="One person. They will get a private link before anyone else does, and they decide what happens next."
       canContinue={canContinue}
       onSubmit={onNext}
+      onBack={onBack}
       nextLabel="Continue"
     >
       <div className="space-y-5">

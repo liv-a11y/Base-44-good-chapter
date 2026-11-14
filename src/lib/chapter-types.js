@@ -12,6 +12,14 @@ export const CHAPTER_TYPES = [
   "Something else",
 ];
 
+/** How the starter opens the chapter: one gift they would give first, or a pool from work. */
+export const CHAPTER_PATHS = ["anchor_gift", "employer_pool"];
+
+export const PATH_LABELS = {
+  anchor_gift: "An anchor gift",
+  employer_pool: "A pool from work",
+};
+
 export const CHAPTER_STATES = [
   "started",
   "curating",

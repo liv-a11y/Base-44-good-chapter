@@ -77,6 +77,132 @@ export const getGuestChapter = createServerFn({ method: "GET" })
     };
   });
 
+const IDEAS_SCHEMA = {
+  type: "object",
+  properties: {
+    ideas: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          name: { type: "string" },
+          what: { type: "string" },
+          why: { type: "string" },
+          find: { type: "string" },
+        },
+        required: ["name", "what", "why"],
+      },
+    },
+  },
+  required: ["ideas"],
+};
+
+const parseIdeas = (raw) => {
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed.filter((row) => row && row.name) : [];
+  } catch {
+    return [];
+  }
+};
+
+const short = (value, limit) => (value ? String(value).slice(0, limit) : "");
+
+/**
+ * Three ideas for one guest, built from the chapter and stored on their own
+ * record. Only that guest's link ever gets them back.
+ */
+export const getGuestIdeas = createServerFn({ method: "GET" })
+  .validator(z.object({ token: z.string().trim().min(12).max(64) }))
+  .handler(async ({ data, context }) => {
+    const service = context.getBase44().asServiceRole;
+
+    const guest = await guestByToken(service, data.token);
+    if (!guest) return null;
+
+    const chapter = await findChapter(service, guest.chapter_id);
+    if (!chapter || chapter.state !== OPEN_STATE || !personSaidYes(chapter)) return null;
+
+    const stored = parseIdeas(guest.ideas);
+    if (stored.length) return { ideas: stored, shared: guest.shared_idea || "" };
+
+    const itemPage = await service.entities.Item.filter(
+      { chapter_id: chapter.id },
+      { sort: "position", limit: 8 },
+    );
+    const approved = (itemPage.items ?? itemPage).filter((item) =>
+      VISIBLE.includes(item.status),
+    );
+
+    const first = (chapter.person_name || "the person").trim().split(/\s+/)[0];
+    const prompt = [
+      `Three extra gift ideas for one guest in a chapter for ${first}. The guest sees these privately; nobody else does.`,
+      `The chapter: ${short(chapter.chapter_type, 80)}.`,
+      chapter.always_wears ? `What ${first} always wears: ${short(chapter.always_wears, 200)}` : "",
+      chapter.rewatches ? `What ${first} rewatches: ${short(chapter.rewatches, 200)}` : "",
+      chapter.never_buys ? `What ${first} would never buy: ${short(chapter.never_buys, 200)}` : "",
+      chapter.anchor_idea ? `The starter's own anchor idea: ${short(chapter.anchor_idea, 120)}` : "",
+      `The eight already approved: ${approved
+        .map((item) => `${item.name} (${short(item.why, 120)})`)
+        .join("; ")}`,
+      "Give exactly three ideas for something this guest could give on top of those. Each is one real object a person can buy.",
+      "Make them specific and unexpected, never a catalogue pick. No gift cards, no money, no bookings. Each must connect to something above in a way that is not obvious.",
+      "For each: name (four words or fewer), what (one sentence on the object), why (one sentence on why it fits this person), find (where to look, a few words). Plain sentences, no exclamation marks, no dashes.",
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    const result = await service.integrations.Core.InvokeLLM({
+      prompt,
+      response_json_schema: IDEAS_SCHEMA,
+    });
+
+    const ideas = (result?.ideas ?? [])
+      .filter((row) => row && row.name)
+      .slice(0, 3)
+      .map((row) => ({
+        name: short(row.name, 90),
+        what: short(row.what, 240),
+        why: short(row.why, 280),
+        find: short(row.find, 90),
+      }));
+
+    if (ideas.length) {
+      await service.entities.Guest.update(guest.id, { ideas: JSON.stringify(ideas) });
+    }
+
+    return { ideas, shared: "" };
+  });
+
+/** One guest passes an idea to the curator. It is never added to the list. */
+export const shareIdea = createServerFn({ method: "POST" })
+  .validator(
+    z.object({
+      token: z.string().trim().min(12).max(64),
+      name: z.string().trim().min(1).max(90),
+    }),
+  )
+  .handler(async ({ data, context }) => {
+    const service = context.getBase44().asServiceRole;
+
+    const guest = await guestByToken(service, data.token);
+    if (!guest) return { ok: false };
+
+    const chapter = await findChapter(service, guest.chapter_id);
+    if (!chapter || chapter.state !== OPEN_STATE || !personSaidYes(chapter)) return { ok: false };
+
+    const idea = parseIdeas(guest.ideas).find((row) => row.name === data.name);
+    if (!idea) return { ok: false };
+
+    await service.entities.Guest.update(guest.id, {
+      shared_idea: idea.name,
+      shared_idea_note: idea.what || "",
+    });
+
+    return { ok: true, shared: idea.name };
+  });
+
 /**
  * A guest takes one item. The token proves who they are, the claim is refused
  * if anything already holds that item, and the name they pick is stored with it.

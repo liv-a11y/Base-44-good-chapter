@@ -3,12 +3,15 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { startChapter } from "@/lib/server-fns";
 import StartLayout from "@/components/start/StartLayout";
+import PathStep from "@/components/start/steps/PathStep";
 import PersonStep from "@/components/start/steps/PersonStep";
 import TypeStep from "@/components/start/steps/TypeStep";
 import PromptStep from "@/components/start/steps/PromptStep";
 import StarterStep from "@/components/start/steps/StarterStep";
 import GuestsStep from "@/components/start/steps/GuestsStep";
 import InterviewStep from "@/components/start/steps/InterviewStep";
+import AnchorStep from "@/components/start/steps/AnchorStep";
+import PoolStep from "@/components/start/steps/PoolStep";
 import DoneStep from "@/components/start/steps/DoneStep";
 
 export const Route = createFileRoute("/start")({
@@ -24,9 +27,21 @@ export const Route = createFileRoute("/start")({
   component: StartPage,
 });
 
-const TOTAL = 8;
+/** The pool path skips the interview and the anchor. Everything else is shared. */
+const stepsFor = (path) => [
+  "path",
+  "person",
+  "type",
+  "prompt1",
+  "prompt2",
+  "prompt3",
+  ...(path === "employer_pool" ? ["pool"] : ["interview", "anchor"]),
+  "starter",
+  "guests",
+];
 
 const EMPTY_FORM = {
+  path: "",
   personName: "",
   personEmail: "",
   chapterType: "",
@@ -34,6 +49,11 @@ const EMPTY_FORM = {
   rewatches: "",
   neverBuys: "",
   starterIdeas: "",
+  anchorIdea: "",
+  anchorNote: "",
+  poolEmployer: "",
+  poolAmount: "",
+  poolTerm: "",
   starterName: "",
   starterEmail: "",
   guests: [{ name: "", email: "" }],
@@ -47,14 +67,17 @@ function StartPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  const update = (patch) => setForm((current) => ({ ...current, ...patch }));
+  const steps = stepsFor(form.path);
+  const current = steps[Math.min(step, steps.length - 1)];
+
+  const update = (patch) => setForm((value) => ({ ...value, ...patch }));
   const goNext = () => {
     setError("");
-    setStep((current) => Math.min(current + 1, TOTAL));
+    setStep((value) => Math.min(value + 1, steps.length));
   };
   const goBack = () => {
     setError("");
-    setStep((current) => Math.max(current - 1, 0));
+    setStep((value) => Math.max(value - 1, 0));
   };
   const restart = () => {
     setForm(EMPTY_FORM);
@@ -72,7 +95,13 @@ function StartPage() {
     setError("");
     setSubmitting(true);
     try {
-      const response = await submitChapter({ data: { ...form, guests } });
+      const response = await submitChapter({
+        data: {
+          ...form,
+          poolAmount: form.path === "employer_pool" ? Number(form.poolAmount) : undefined,
+          guests,
+        },
+      });
       setResult(response);
     } catch {
       setError("This did not save. Try once more.");
@@ -84,11 +113,13 @@ function StartPage() {
   let screen = null;
   if (result) {
     screen = <DoneStep result={result} form={form} onRestart={restart} />;
-  } else if (step === 0) {
-    screen = <PersonStep form={form} update={update} onNext={goNext} />;
-  } else if (step === 1) {
+  } else if (current === "path") {
+    screen = <PathStep form={form} update={update} onNext={goNext} />;
+  } else if (current === "person") {
+    screen = <PersonStep form={form} update={update} onNext={goNext} onBack={goBack} />;
+  } else if (current === "type") {
     screen = <TypeStep form={form} update={update} onNext={goNext} onBack={goBack} />;
-  } else if (step === 2) {
+  } else if (current === "prompt1") {
     screen = (
       <PromptStep
         label="Prompt one of three"
@@ -101,7 +132,7 @@ function StartPage() {
         onBack={goBack}
       />
     );
-  } else if (step === 3) {
+  } else if (current === "prompt2") {
     screen = (
       <PromptStep
         label="Prompt two of three"
@@ -114,7 +145,7 @@ function StartPage() {
         onBack={goBack}
       />
     );
-  } else if (step === 4) {
+  } else if (current === "prompt3") {
     screen = (
       <PromptStep
         label="Prompt three of three"
@@ -127,11 +158,15 @@ function StartPage() {
         onBack={goBack}
       />
     );
-  } else if (step === 5) {
+  } else if (current === "interview") {
     screen = <InterviewStep form={form} update={update} onNext={goNext} onBack={goBack} />;
-  } else if (step === 6) {
+  } else if (current === "anchor") {
+    screen = <AnchorStep form={form} update={update} onNext={goNext} onBack={goBack} />;
+  } else if (current === "pool") {
+    screen = <PoolStep form={form} update={update} onNext={goNext} onBack={goBack} />;
+  } else if (current === "starter") {
     screen = <StarterStep form={form} update={update} onNext={goNext} onBack={goBack} />;
-  } else if (step === 7) {
+  } else if (current === "guests") {
     screen = (
       <GuestsStep
         form={form}
@@ -144,7 +179,7 @@ function StartPage() {
   }
 
   return (
-    <StartLayout step={result ? TOTAL - 1 : step} total={TOTAL}>
+    <StartLayout step={result ? steps.length - 1 : step} total={steps.length}>
       {submitting ? <p className="gc-label mb-6 text-ink/55">Saving</p> : null}
       {screen}
     </StartLayout>

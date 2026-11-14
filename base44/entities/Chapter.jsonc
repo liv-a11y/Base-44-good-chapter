@@ -86,6 +86,37 @@
       "type": "string",
       "description": "The one idea the starter kept from the interview. An idea only, never an approved item."
     },
+    "path": {
+      "type": "string",
+      "enum": [
+        "anchor_gift",
+        "employer_pool"
+      ],
+      "enumColors": [
+        "blue",
+        "green"
+      ],
+      "default": "anchor_gift",
+      "description": "How the starter opens the chapter: one gift they would give first, or a per person pool from work."
+    },
+    "anchor_idea": {
+      "type": "string",
+      "description": "The one gift the starter would give first. The curator starts here. An idea only, never an approved item."
+    },
+    "anchor_note": {
+      "type": "string"
+    },
+    "pool_employer": {
+      "type": "string",
+      "description": "Who set the pool aside. Shown on the desk, never to a guest."
+    },
+    "pool_amount": {
+      "type": "number",
+      "description": "Per person amount set at the start of the benefit term. No money moves through this site."
+    },
+    "pool_term": {
+      "type": "string"
+    },
     "state": {
       "type": "string",
       "enum": [

@@ -1,4 +1,6 @@
-import { CHAPTER_STATE_LABELS } from "@/lib/chapter-types";
+import { CHAPTER_STATE_LABELS, PATH_LABELS } from "@/lib/chapter-types";
+
+const MONEY = (value) => `$${Number(value || 0).toLocaleString("en-US")}`;
 
 const Field = ({ label, value }) => (
   <div className="border-t border-ink/25 py-3">
@@ -31,6 +33,24 @@ export default function AnswersPanel({ chapter, guests, reasons }) {
         <Field label="Rewatches" value={chapter.rewatches} />
         <Field label="Would never buy themselves" value={chapter.never_buys} />
         <Field label="Idea kept from the interview" value={chapter.starter_ideas} />
+        <Field label="How it starts" value={PATH_LABELS[chapter.path] || "An anchor gift"} />
+        {chapter.path === "employer_pool" ? (
+          <Field
+            label="The pool"
+            value={[
+              `${MONEY(chapter.pool_amount)} per person`,
+              chapter.pool_term ? `term ${chapter.pool_term}` : "",
+              chapter.pool_employer || "",
+            ]
+              .filter(Boolean)
+              .join(" · ")}
+          />
+        ) : (
+          <Field
+            label="The anchor gift"
+            value={[chapter.anchor_idea, chapter.anchor_note].filter(Boolean).join("\n")}
+          />
+        )}
         <Field
           label="Guests they named"
           value={
@@ -42,6 +62,26 @@ export default function AnswersPanel({ chapter, guests, reasons }) {
       </div>
 
       <p className="gc-label mt-4 text-ink/50">State: {CHAPTER_STATE_LABELS[chapter.state]}</p>
+
+      {guests.some((guest) => guest.shared_idea) ? (
+        <div className="mt-6">
+          <h3 className="gc-label text-ink/50">Ideas the guests sent</h3>
+          <ul className="mt-2 space-y-2">
+            {guests
+              .filter((guest) => guest.shared_idea)
+              .map((guest) => (
+                <li key={guest.id} className="text-[17px] leading-[1.35] text-ink/85">
+                  <span className="gc-spec uppercase">{guest.name}</span> · {guest.shared_idea}
+                  {guest.shared_idea_note ? ` · ${guest.shared_idea_note}` : ""}
+                </li>
+              ))}
+          </ul>
+          <p className="mt-2 text-[15px] leading-[1.4] text-ink/50">
+            An idea, not an item. Nothing here is on the list until you add it and the person
+            approves it.
+          </p>
+        </div>
+      ) : null}
 
       {reasons.length ? (
         <div className="mt-6">

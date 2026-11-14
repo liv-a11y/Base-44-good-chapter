@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { getGuestChapter, claimItem } from "@/lib/guest-fns";
 import Wordmark from "@/components/site/Wordmark";
 import GuestItem from "@/components/guest/GuestItem";
+import PrivateIdeas from "@/components/guest/PrivateIdeas";
 
 export const Route = createFileRoute("/guest/$token")({
   loader: async ({ params }) => {
@@ -77,6 +78,8 @@ function GuestChapter() {
             There is nothing to give from this chapter yet.
           </p>
         )}
+
+        {chapter.open ? <PrivateIdeas token={token} person={first} /> : null}
 
         <p className="gc-label mt-12 text-ink/45">
           A friend started this. {first} approved every item here. Nobody asked.
