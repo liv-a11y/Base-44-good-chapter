@@ -27,11 +27,24 @@ const storeDomain = () => cleanDomain(secrets.get("SHOPIFY_STORE_DOMAIN"));
 export const shopifyReady = () =>
   Boolean(storeDomain() && secrets.get("SHOPIFY_STOREFRONT_TOKEN"));
 
-/** One search box query against the store, returned as plain card data. */
-export async function searchProducts(query, first = 3) {
+const BROWSE = `query Browse($first: Int!) {
+  products(first: $first, sortKey: BEST_SELLING) {
+    nodes {
+      id
+      title
+      handle
+      onlineStoreUrl
+      featuredImage { url altText }
+      priceRange { minVariantPrice { amount currencyCode } }
+    }
+  }
+}`;
+
+/** One Storefront query, answered as plain card data. */
+async function ask(query, variables) {
   const domain = storeDomain();
   const token = secrets.get("SHOPIFY_STOREFRONT_TOKEN");
-  if (!domain || !token || !query) return [];
+  if (!domain || !token) return [];
 
   const response = await fetch(`https://${domain}/api/${API_VERSION}/graphql.json`, {
     method: "POST",
@@ -39,7 +52,7 @@ export async function searchProducts(query, first = 3) {
       "Content-Type": "application/json",
       "X-Shopify-Storefront-Access-Token": token,
     },
-    body: JSON.stringify({ query: SEARCH, variables: { q: query, first } }),
+    body: JSON.stringify({ query, variables }),
   });
   if (!response.ok) return [];
 
@@ -56,4 +69,15 @@ export async function searchProducts(query, first = 3) {
     source,
     source_url: node.onlineStoreUrl || `https://${domain}/products/${node.handle}`,
   }));
+}
+
+/** One search box query against the store. */
+export async function searchProducts(query, first = 3) {
+  if (!query) return [];
+  return ask(SEARCH, { q: query, first: first ?? 3 });
+}
+
+/** What the shop already sells, used when a search finds nothing. */
+export async function browseProducts(first = 8) {
+  return ask(BROWSE, { first });
 }

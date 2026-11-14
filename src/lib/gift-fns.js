@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { searchProducts, shopifyReady } from "@/lib/shopify.server";
+import { browseProducts, searchProducts, shopifyReady } from "@/lib/shopify.server";
 
 const EIGHT = 8;
 
@@ -111,6 +111,19 @@ export const suggestGifts = createServerFn({ method: "POST" })
       if (cap > 0 && product.price > cap) continue;
       seen.add(product.id);
       items.push(product);
+    }
+
+    // A shop that carries nothing matching the searches still has a shelf. Show
+    // what it sells rather than an empty panel.
+    if (!items.length) {
+      const shelf = await browseProducts(EIGHT);
+      return {
+        connected: true,
+        items: shelf.filter((product) => !cap || product.price <= cap).map((product) => ({
+          ...product,
+          why: "",
+        })),
+      };
     }
 
     return { connected: true, items };
