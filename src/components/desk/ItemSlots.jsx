@@ -6,6 +6,7 @@ import { Image } from "@/components/ui/image";
 import DrawingPlaceholder from "@/components/site/DrawingPlaceholder";
 import { addItem, replaceItem, reorderItems } from "@/lib/curator-fns";
 import ItemDialog from "@/components/desk/ItemDialog";
+import ShopSearch from "@/components/desk/ShopSearch";
 
 const EIGHT = 8;
 
@@ -89,7 +90,23 @@ export default function ItemSlots({ chapterId, items }) {
 
       {error ? <p className="mt-2 text-[17px] text-clay">{error}</p> : null}
 
-      <div className="mt-3 space-y-3">
+      <ShopSearch
+        disabled={items.length >= EIGHT}
+        onPick={(product) =>
+          setDialog({
+            mode: "add",
+            item: {
+              name: product.name,
+              photo_url: product.photo_url || "",
+              price: product.price,
+              source_url: product.source_url || "",
+              why: "",
+            },
+          })
+        }
+      />
+
+      <div className="mt-5 space-y-3">
         {Array.from({ length: EIGHT }).map((_, index) => {
           const item = items[index];
           return item ? (
