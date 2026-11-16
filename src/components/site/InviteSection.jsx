@@ -10,6 +10,21 @@ const WAYS_IN = [
   "General inquiry",
 ];
 
+const COPY = {
+  default: {
+    headline: "Join the pilot. Make showing up the new normal.",
+    line: "Friends, agents, employers, and the curious. Tell us who you are and we will write when the doors open.",
+  },
+  "Founding partner: Employer": {
+    headline: "Make showing up part of work.",
+    line: "A chapter for the raise, the move, the leave, the diagnosis, the divorce nobody announces at the all hands. You set an amount aside per person. The person says yes first.",
+  },
+  "Founding partner: Real estate": {
+    headline: "Make showing up part of the move.",
+    line: "Closing day is the easy part. A chapter is what a realtor hands over after it, eight things the person actually needs, approved by them before anyone else sees it.",
+  },
+};
+
 const SCOPED_CSS = `
 .gci-band { border: 1px solid #182e91; }
 .gci-stamp { width:100px; height:100px; border:1px solid #F8EBDA; border-radius:50%; display:grid; place-items:center; opacity:.8; position:relative; animation: gci-ink .8s cubic-bezier(.2,.7,.2,1) both; }
@@ -45,6 +60,7 @@ export default function InviteSection() {
   const [email, setEmail] = useState("");
   const [state, setState] = useState("idle");
   const [error, setError] = useState("");
+  const copy = COPY[interest] ?? COPY.default;
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -72,29 +88,18 @@ export default function InviteSection() {
         <div className="flex flex-col justify-between pb-2 pt-[6px]">
           <div>
             <p className="gc-label">Private pilot</p>
-            <h2 className="mt-[30px] mb-[22px] text-[38px] leading-[1.02] tracking-[-0.035em] sm:text-[46px] lg:text-[52px]">
-              Join the pilot. Make showing up the new normal.
-            </h2>
-            <p className="max-w-[34rem] text-[19px] leading-[1.45] text-[#fff0dc]">
-              Friends, agents, employers, and the curious. Tell us who you are and we will write when
-              the doors open.
-            </p>
-            <svg
-              className="mt-[34px] h-[82px] w-[82px] [filter:drop-shadow(5px_5px_0_rgba(101,28,26,.24))] [transform:rotate(-10deg)]"
-              viewBox="0 0 100 100"
-              aria-hidden="true"
+            <h2
+              key={copy.headline}
+              className="gc-step mt-[30px] mb-[22px] text-[38px] leading-[1.02] tracking-[-0.035em] sm:text-[46px] lg:text-[52px]"
             >
-              <path fill="#C2402F" d="M14 12h43l30 30-45 45L12 57V14a2 2 0 0 1 2-2Z" />
-              <path fill="#F8EBDA" d="M23 22h28l23 23-32 32-21-21V24a2 2 0 0 1 2-2Z" />
-              <circle cx="28" cy="28" r="5" fill="#651C1A" />
-              <path
-                d="M38 56c7-8 13-13 22-18"
-                fill="none"
-                stroke="#C2402F"
-                strokeWidth="3"
-                strokeLinecap="round"
-              />
-            </svg>
+              {copy.headline}
+            </h2>
+            <p
+              key={copy.line}
+              className="gc-step max-w-[34rem] text-[19px] leading-[1.45] text-[#fff0dc]"
+            >
+              {copy.line}
+            </p>
           </div>
           <div className="gci-stamp mt-10 self-start" aria-hidden="true" />
         </div>
