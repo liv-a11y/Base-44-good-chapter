@@ -10,9 +10,13 @@ export default function Hero() {
           <p className="gc-label text-ink/65">Since 1924, nobody asks.</p>
           <h1 className="mt-7 max-w-5xl text-[42px] leading-[1.1] sm:text-[60px] lg:text-[84px]">
             you shouldn’t have to get married to get a{" "}
-            <span className="inline-block rounded-[2px] bg-cobalt px-[0.14em] pb-[0.09em] pt-[0.02em] leading-none text-plaster">
-              fucking
-            </span>{" "}
+            <span
+              aria-hidden="true"
+              className="inline-block rounded-[2px] bg-cobalt px-[0.14em] pb-[0.09em] pt-[0.02em] leading-none text-plaster"
+            >
+              f$%#ng
+            </span>
+            <span className="sr-only">fucking</span>{" "}
             toaster.
           </h1>
           <p className="mt-7 max-w-[34rem] text-[19px] leading-[1.45] sm:text-[21px]">

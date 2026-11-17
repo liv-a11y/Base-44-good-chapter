@@ -33,6 +33,9 @@ export default {
   			olive: '#635728',
   			walnut: '#85522C',
   			green: '#0B5B52',
+  			// Names the partner pages use for clay and blush
+  			emphasis: { DEFAULT: '#C2402F', foreground: '#F8EBDA' },
+  			highlight: { DEFAULT: '#E59A6C', foreground: '#651C1A' },
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {

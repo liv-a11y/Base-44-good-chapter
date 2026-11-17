@@ -492,3 +492,69 @@
     transition: none;
   }
 }
+/* Layout and label helpers the partner pages share. */
+@layer components {
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    line-height: 1.25rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .site-container {
+    width: 100%;
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: 20px;
+  }
+  .site-section {
+    padding-block: 80px;
+  }
+  @media (min-width: 768px) {
+    .site-container {
+      padding-inline: 32px;
+    }
+    .site-section {
+      padding-block: 112px;
+    }
+  }
+  .site-h1 {
+    font-size: clamp(44px, 6vw, 80px);
+    line-height: 1.02;
+    letter-spacing: -0.01em;
+  }
+  .site-h2 {
+    font-size: clamp(36px, 4.2vw, 56px);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+  }
+  .site-body {
+    font-size: clamp(17px, 1.6vw, 20px);
+    line-height: 1.5;
+  }
+  .sticker {
+    display: inline-flex;
+    border: 1.5px solid #651c1a;
+    border-radius: 999px;
+    padding: 0.45rem 0.8rem;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    transform: rotate(-2.4deg);
+  }
+  .lift-card {
+    border-radius: 4px;
+    transition: transform 170ms linear;
+  }
+  .lift-card:hover {
+    transform: translateY(-4px);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lift-card,
+    .lift-card:hover {
+      transition: none;
+      transform: none;
+    }
+  }
+}

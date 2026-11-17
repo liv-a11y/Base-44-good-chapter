@@ -4,6 +4,9 @@ import Wordmark from "@/components/site/Wordmark";
 const SITE_LINKS = [
   { label: "Our why", to: "/read" },
   { label: "Giving back", to: "/giving" },
+  { label: "Partners", to: "/partners" },
+  { label: "Employers", to: "/partners/employers" },
+  { label: "Real estate", to: "/partners/real-estate" },
   { label: "Brands", to: "/partners/brands" },
   { label: "Maya’s chapter", to: "/first-place" },
   { label: "Start a chapter", to: "/start" },

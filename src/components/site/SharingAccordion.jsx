@@ -2,7 +2,7 @@ import { useId, useState } from "react";
 import { Image } from "@/components/ui/image";
 
 const LAMP =
-  "https://goodchaptercollective.com/__l5e/assets-v1/0890e952-2b14-48c0-972a-5b879bb9e9de/cobalt-table-lamp-600.webp";
+  "/media/cobalt-table-lamp-600.webp";
 const CARD =
   "https://media.base44.com/images/public/6af66f925ddaabe6b3b327a8/d14855bf1_generated_image.png";
 const HANDOFF =

@@ -54,8 +54,8 @@ const SCOPED_CSS = `
 }
 `;
 
-export default function InviteSection() {
-  const [interest, setInterest] = useState("");
+export default function InviteSection({ defaultInterest = "", id = "invite" }) {
+  const [interest, setInterest] = useState(defaultInterest);
   const [comments, setComments] = useState("");
   const [email, setEmail] = useState("");
   const [state, setState] = useState("idle");
@@ -82,7 +82,7 @@ export default function InviteSection() {
   }
 
   return (
-    <section id="invite" className="gci-band scroll-mt-24 bg-cobalt text-plaster">
+    <section id={id} className="gci-band scroll-mt-24 bg-cobalt text-plaster">
       <style>{SCOPED_CSS}</style>
       <div className="grid gap-10 px-6 py-12 sm:px-10 md:grid-cols-[310px_1fr] md:gap-12 lg:px-[58px] lg:py-[54px]">
         <div className="flex flex-col justify-between pb-2 pt-[6px]">
