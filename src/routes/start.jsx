@@ -16,6 +16,9 @@ import PoolStep from "@/components/start/steps/PoolStep";
 import DoneStep from "@/components/start/steps/DoneStep";
 import GiftPanel from "@/components/start/GiftPanel";
 
+/** The start flow lives on its own subdomain. */
+const START_URL = "https://start.goodchaptercollective.com";
+
 export const Route = createFileRoute("/start")({
   head: () => ({
     meta: [
@@ -24,7 +27,11 @@ export const Route = createFileRoute("/start")({
         name: "description",
         content: "Answer a few questions about the person. A curator builds eight things. Nothing is sent until they say yes.",
       },
+      { property: "og:url", content: START_URL },
+      { property: "og:title", content: "Start a chapter | Good Chapter Co." },
+      { property: "og:description", content: "Answer a few questions about the person. A curator builds eight things. Nothing is sent until they say yes." },
     ],
+    links: [{ rel: "canonical", href: START_URL }],
   }),
   component: StartPage,
 });

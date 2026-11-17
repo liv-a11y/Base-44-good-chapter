@@ -1,5 +1,7 @@
-import { Link } from "@tanstack/react-router";
 import Wordmark from "@/components/site/Wordmark";
+
+/** The marketing site is on the main domain, this flow on its own subdomain. */
+const SITE_URL = "https://goodchaptercollective.com";
 
 export default function StartLayout({ step, total, panel, children }) {
   const filled = Math.round(((step + 1) / total) * 100);
@@ -9,9 +11,9 @@ export default function StartLayout({ step, total, panel, children }) {
       <header className="bg-ink">
         <div className="mx-auto flex w-full max-w-[1100px] items-center justify-between gap-6 px-6 py-5">
           <Wordmark tone="reverse" />
-          <Link to="/" className="gc-label pb-0.5 text-plaster">
+          <a href={SITE_URL} className="gc-label pb-0.5 text-plaster">
             Leave
-          </Link>
+          </a>
         </div>
       </header>
 
