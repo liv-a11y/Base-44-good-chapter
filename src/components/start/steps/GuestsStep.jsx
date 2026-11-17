@@ -56,13 +56,18 @@ export default function GuestsStep({ form, update, onNext, onBack, error }) {
         ))}
       </div>
 
-      <button
-        type="button"
-        onClick={() => update({ guests: [...rows, { name: "", email: "" }] })}
-        className="gc-label mt-4 inline-flex items-center gap-2 text-cobalt"
-      >
-        <Plus size={14} strokeWidth={2} /> Add another guest
-      </button>
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-ink/15 pt-4">
+        <button
+          type="button"
+          onClick={() => update({ guests: [...rows, { name: "", email: "" }] })}
+          className="gc-label inline-flex items-center gap-2 text-cobalt"
+        >
+          <Plus size={14} strokeWidth={2} /> Add another guest
+        </button>
+        <span className="gc-spec text-ink/45">
+          {String(filled.length).padStart(2, "0")} on the list
+        </span>
+      </div>
 
       <p className="mt-6 max-w-[44ch] text-[17px] leading-[1.38] text-ink/65">
         No phone numbers, no messaging. Guests hear from you once, by email, and only after the person

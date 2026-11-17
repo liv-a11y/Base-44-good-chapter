@@ -3,12 +3,17 @@ import StartQuestion from "@/components/start/StartQuestion";
 export default function PersonStep({ form, update, onNext, onBack }) {
   const canContinue =
     form.personName.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.personEmail.trim());
+  const person = form.personName.trim().split(/\s+/)[0] || "";
 
   return (
     <StartQuestion
       label="The person"
       question="Who is this chapter for?"
-      hint="One person. They will get a private link before anyone else does, and they decide what happens next."
+      hint={
+        person
+          ? `One person. ${person} gets a private link before anyone else, and decides who is on the guest list.`
+          : "One person. They will get a private link before anyone else does, and they decide what happens next."
+      }
       canContinue={canContinue}
       onSubmit={onNext}
       onBack={onBack}

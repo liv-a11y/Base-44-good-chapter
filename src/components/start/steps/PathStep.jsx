@@ -1,3 +1,4 @@
+import { Check } from "lucide-react";
 import StartQuestion from "@/components/start/StartQuestion";
 
 const PATHS = [
@@ -39,10 +40,18 @@ export default function PathStep({ form, update, onNext }) {
             <span className="gc-spec w-6 shrink-0 pt-1 opacity-70">
               {String(index + 1).padStart(2, "0")}
             </span>
-            <span className="block">
+            <span className="block flex-1">
               <span className="block text-[21px] leading-[1.2]">{path.title}</span>
               <span className="mt-1 block text-[17px] leading-[1.35] opacity-75">{path.line}</span>
             </span>
+            <Check
+              size={16}
+              strokeWidth={2}
+              aria-hidden="true"
+              className={`mt-1 shrink-0 ${
+                form.path === path.value ? "opacity-100" : "opacity-0"
+              }`}
+            />
           </button>
         ))}
       </div>

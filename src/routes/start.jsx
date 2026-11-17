@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { startChapter } from "@/lib/server-fns";
 import { BUDGET_PATHS } from "@/lib/chapter-types";
 import StartLayout from "@/components/start/StartLayout";
+import ChapterSoFar from "@/components/start/ChapterSoFar";
 import PathStep from "@/components/start/steps/PathStep";
 import PersonStep from "@/components/start/steps/PersonStep";
 import TypeStep from "@/components/start/steps/TypeStep";
@@ -206,8 +207,16 @@ function StartPage() {
     />
   ) : null;
 
+  const trail = [form.personName.trim(), form.chapterType].filter(Boolean).join(" / ");
+
   return (
-    <StartLayout step={result ? steps.length - 1 : step} total={steps.length} panel={panel}>
+    <StartLayout
+      step={result ? steps.length - 1 : step}
+      total={steps.length}
+      panel={panel}
+      summary={result ? null : <ChapterSoFar form={form} />}
+      trail={result ? "Filed" : trail}
+    >
       {submitting ? <p className="gc-label mb-6 text-ink/55">Saving</p> : null}
       {screen}
     </StartLayout>
