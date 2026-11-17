@@ -1,0 +1,56 @@
+{
+  "name": "InventoryIdea",
+  "description": "A product concept the shop does not carry yet, kept from a chapter that needed it. Never one of the eight.",
+  "type": "object",
+  "properties": {
+    "chapter_id": {
+      "type": "string"
+    },
+    "concept": {
+      "type": "string",
+      "description": "The object, named the way a shop would label it."
+    },
+    "detail": {
+      "type": "string",
+      "description": "One plain sentence about what it is."
+    },
+    "category": {
+      "type": "string",
+      "description": "One word shelf, such as Kitchen or Textile."
+    },
+    "phrases": {
+      "type": "string",
+      "description": "Search phrases a buyer would type to source it, stored as JSON."
+    },
+    "reason": {
+      "type": "string",
+      "description": "One sentence on why this closes the gap in this chapter."
+    }
+  },
+  "required": [
+    "chapter_id",
+    "concept"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

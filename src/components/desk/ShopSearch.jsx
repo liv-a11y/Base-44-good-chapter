@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { Image } from "@/components/ui/image";
 import { searchShop } from "@/lib/shop-fns";
+import { saveInventoryIdea, suggestInventoryIdea } from "@/lib/idea-fns";
+import IdeaCard from "@/components/desk/IdeaCard";
 
 const money = (value) =>
   value == null || Number.isNaN(Number(value))
@@ -11,8 +14,11 @@ const money = (value) =>
       : `$${Number(value).toFixed(2)}`;
 
 /** Search the store from the desk. Picking a product opens the item form, filled in. */
-export default function ShopSearch({ onPick, disabled }) {
+export default function ShopSearch({ chapterId, onPick, disabled }) {
+  const router = useRouter();
   const search = useServerFn(searchShop);
+  const ask = useServerFn(suggestInventoryIdea);
+  const keep = useServerFn(saveInventoryIdea);
 
   const [query, setQuery] = useState("");
   const [items, setItems] = useState([]);
@@ -21,10 +27,17 @@ export default function ShopSearch({ onPick, disabled }) {
   const [disconnected, setDisconnected] = useState(false);
   const [error, setError] = useState("");
 
+  const [idea, setIdea] = useState(null);
+  const [asking, setAsking] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
   const run = async (event) => {
     event.preventDefault();
     setError("");
     setSearching(true);
+    setIdea(null);
+    setSaved(false);
     try {
       const result = await search({ data: { query: query.trim() } });
       setDisconnected(!result.connected);
@@ -36,6 +49,36 @@ export default function ShopSearch({ onPick, disabled }) {
       setSearching(false);
     }
   };
+
+  const nameSomething = async () => {
+    setAsking(true);
+    setError("");
+    try {
+      const result = await ask({ data: { chapter_id: chapterId, query: query.trim() } });
+      setIdea(result.idea);
+      setSaved(false);
+    } catch {
+      setError("The desk could not name anything. Try once more.");
+    } finally {
+      setAsking(false);
+    }
+  };
+
+  const keepIdea = async () => {
+    setSaving(true);
+    setError("");
+    try {
+      await keep({ data: { chapter_id: chapterId, ...idea } });
+      setSaved(true);
+      await router.invalidate();
+    } catch {
+      setError("That idea did not save.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const empty = searched && !disconnected && !items.length && !error;
 
   return (
     <div className="mt-6 border border-ink bg-paper p-4">
@@ -76,10 +119,28 @@ export default function ShopSearch({ onPick, disabled }) {
 
       {error ? <p className="mt-2 text-[17px] text-clay">{error}</p> : null}
 
-      {searched && !disconnected && !items.length && !error ? (
-        <p className="mt-2 text-[15px] leading-[1.4] text-ink/55">
-          Nothing in the shop matches that. Try a shorter search, in plain words.
-        </p>
+      {empty ? (
+        <div className="mt-2">
+          <p className="text-[15px] leading-[1.4] text-ink/55">
+            Nothing in the shop matches that. Try a shorter search, in plain words.
+          </p>
+          {chapterId && !idea ? (
+            <button
+              type="button"
+              onClick={nameSomething}
+              disabled={asking}
+              className="gc-label gc-link mt-2 pb-0.5 disabled:border-b-0 disabled:text-ink/30"
+            >
+              {asking ? "Naming one" : "Name the closest thing anyway"}
+            </button>
+          ) : null}
+        </div>
+      ) : null}
+
+      {idea ? (
+        <div className="mt-3">
+          <IdeaCard idea={idea} onSave={keepIdea} saved={saved} saving={saving} />
+        </div>
       ) : null}
 
       {items.length ? (

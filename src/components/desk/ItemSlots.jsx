@@ -91,6 +91,7 @@ export default function ItemSlots({ chapterId, items }) {
       {error ? <p className="mt-2 text-[17px] text-clay">{error}</p> : null}
 
       <ShopSearch
+        chapterId={chapterId}
         disabled={items.length >= EIGHT}
         onPick={(product) =>
           setDialog({

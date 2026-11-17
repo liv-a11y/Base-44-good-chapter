@@ -5,6 +5,7 @@ import DeskShell from "@/components/desk/DeskShell";
 import AnswersPanel from "@/components/desk/AnswersPanel";
 import DecisionPanel from "@/components/desk/DecisionPanel";
 import ItemSlots from "@/components/desk/ItemSlots";
+import ChapterIdeas from "@/components/desk/ChapterIdeas";
 import StateBar from "@/components/desk/StateBar";
 
 export const Route = createFileRoute("/_authed/desk/$chapterId")({
@@ -24,7 +25,7 @@ export const Route = createFileRoute("/_authed/desk/$chapterId")({
 });
 
 function ChapterPage() {
-  const { chapter, items, guests, reasons } = Route.useLoaderData();
+  const { chapter, items, guests, reasons, ideas } = Route.useLoaderData();
 
   return (
     <DeskShell>
@@ -49,7 +50,10 @@ function ChapterPage() {
           <AnswersPanel chapter={chapter} guests={guests} reasons={reasons} />
           <DecisionPanel chapter={chapter} />
         </div>
-        <ItemSlots chapterId={chapter.id} items={items} />
+        <div>
+          <ItemSlots chapterId={chapter.id} items={items} />
+          <ChapterIdeas ideas={ideas} />
+        </div>
       </div>
     </DeskShell>
   );

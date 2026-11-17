@@ -1,20 +1,25 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { listChapters } from "@/lib/curator-fns";
+import { listInventoryIdeas } from "@/lib/idea-fns";
 import DeskShell from "@/components/desk/DeskShell";
 import ChapterTable from "@/components/desk/ChapterTable";
+import InventoryBoard from "@/components/desk/InventoryBoard";
 
 export const Route = createFileRoute("/_authed/desk")({
   ssr: false,
   beforeLoad: ({ context }) => {
     if (context.user?.role !== "admin") throw redirect({ to: "/" });
   },
-  loader: () => listChapters(),
+  loader: async () => ({
+    chapters: await listChapters(),
+    ideas: await listInventoryIdeas(),
+  }),
   head: () => ({ meta: [{ title: "Curator desk | Good Chapter Co." }] }),
   component: DeskPage,
 });
 
 function DeskPage() {
-  const chapters = Route.useLoaderData();
+  const { chapters, ideas } = Route.useLoaderData();
   const open = chapters.filter((chapter) => !["closed", "declined"].includes(chapter.state));
 
   return (
@@ -26,6 +31,7 @@ function DeskPage() {
       <div className="mt-2">
         <ChapterTable chapters={chapters} />
       </div>
+      <InventoryBoard ideas={ideas} />
     </DeskShell>
   );
 }

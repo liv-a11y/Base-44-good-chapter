@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireUser } from "@/lib/auth-middleware";
 import { guestInvitationEmail, personLinkEmail } from "@/lib/emails";
+import { readPhrases } from "@/lib/idea-fns";
 import { newToken } from "@/lib/tokens";
 
 /** The chapter lifecycle, in the only order the desk can walk it. */
@@ -86,6 +87,10 @@ export const getChapter = createServerFn({ method: "GET" })
       { limit: 50 },
     );
     const claims = claimPage.items ?? claimPage;
+    const ideaPage = await service.entities.InventoryIdea.filter(
+      { chapter_id: chapter.id },
+      { sort: "-created_date", limit: 20 },
+    );
 
     return {
       chapter,
@@ -116,6 +121,14 @@ export const getChapter = createServerFn({ method: "GET" })
         item_id: row.item_id,
         reason_code: row.reason_code,
         note: row.note || "",
+      })),
+      ideas: (ideaPage.items ?? ideaPage).map((row) => ({
+        id: row.id,
+        concept: row.concept,
+        detail: row.detail || "",
+        category: row.category || "",
+        reason: row.reason || "",
+        phrases: readPhrases(row.phrases),
       })),
     };
   });
