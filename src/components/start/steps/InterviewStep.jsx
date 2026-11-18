@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import InterviewChat from "@/components/interview/InterviewChat";
+import { interviewSeed } from "@/lib/chapter-questions";
 
 const first = (name) => (name || "").trim().split(/\s+/)[0] || "them";
 
@@ -8,16 +9,7 @@ export default function InterviewStep({ form, update, onNext, onBack }) {
   const person = first(form.personName);
   const [picked, setPicked] = useState(form.starterIdeas ? form.starterIdeas.split(":")[0] : "");
 
-  const seedMessage = [
-    `I am starting a chapter for ${form.personName || "a friend"}.`,
-    `The chapter is ${form.chapterType || "not chosen yet"}.`,
-    form.alwaysWears ? `What they always wear: ${form.alwaysWears}` : "",
-    form.rewatches ? `What they rewatch: ${form.rewatches}` : "",
-    form.neverBuys ? `What they would never buy themselves: ${form.neverBuys}` : "",
-    "Ask me what you need, one question at a time, then suggest the three things.",
-  ]
-    .filter(Boolean)
-    .join("\n");
+  const seedMessage = interviewSeed(form);
 
   const keep = (idea) => {
     setPicked(idea.name);

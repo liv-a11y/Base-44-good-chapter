@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { suggestGifts } from "@/lib/gift-fns";
 import GiftCard from "@/components/start/GiftCard";
+import GapQueue from "@/components/start/GapQueue";
+import RecurringGaps from "@/components/start/RecurringGaps";
 
 const EIGHT = 8;
 
@@ -11,40 +13,58 @@ const spoken = (answers) =>
     .join(" ")
     .trim().length;
 
-export default function GiftPanel({ answers, onChange }) {
+export default function GiftPanel({ answers, onChange, onBusy }) {
   const suggest = useServerFn(suggestGifts);
   const [items, setItems] = useState([]);
+  const [gaps, setGaps] = useState([]);
+  const [recurring, setRecurring] = useState([]);
   const [loading, setLoading] = useState(false);
   const [connected, setConnected] = useState(true);
+
+  // The step owns the draft; the panel only reports what came back.
+  const report = useRef(onChange);
+  report.current = onChange;
+  const reportBusy = useRef(onBusy);
+  reportBusy.current = onBusy;
 
   const key = JSON.stringify(answers);
 
   useEffect(() => {
     if (spoken(answers) < 4) {
       setItems([]);
-      onChange([]);
+      setGaps([]);
+      setRecurring([]);
+      report.current({ items: [], gaps: [] });
+      reportBusy.current?.(false);
       return;
     }
 
     let live = true;
     const timer = setTimeout(async () => {
       setLoading(true);
+      reportBusy.current?.(true);
       try {
         const result = await suggest({ data: answers });
         if (!live) return;
         setConnected(result.connected !== false);
         setItems(result.items || []);
-        onChange(result.items || []);
+        setGaps(result.gaps || []);
+        setRecurring(result.recurring || []);
+        report.current({ items: result.items || [], gaps: result.gaps || [] });
       } catch {
         if (live) setItems([]);
       } finally {
-        if (live) setLoading(false);
+        if (live) {
+          setLoading(false);
+          reportBusy.current?.(false);
+        }
       }
     }, 800);
 
     return () => {
       live = false;
       clearTimeout(timer);
+      reportBusy.current?.(false);
     };
   }, [key]);
 
@@ -97,10 +117,15 @@ export default function GiftPanel({ answers, onChange }) {
       </div>
 
       <p className="mt-2 max-w-[46ch] text-[15px] leading-[1.4] text-ink/55">
-        {loading && items.length ? "Refreshing as you answer." : "Suggestions only, and they change as you answer. The curator reads every one before the person sees anything."}
+        {loading && items.length
+          ? "Refreshing as you answer."
+          : "Suggestions only, and they change as you answer. The curator reads every one before the person sees anything."}
       </p>
 
       {body}
+
+      <GapQueue gaps={gaps} />
+      <RecurringGaps rows={recurring} />
     </div>
   );
 }

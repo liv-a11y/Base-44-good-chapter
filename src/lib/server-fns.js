@@ -35,6 +35,15 @@ const suggestion = z.object({
   why: z.string().trim().max(400).optional(),
 });
 
+/** A concept the shop does not carry. Kept as an idea, never as an item. */
+const gapConcept = z.object({
+  concept: z.string().trim().min(1).max(90),
+  detail: z.string().trim().max(240).optional(),
+  category: z.string().trim().max(40).optional(),
+  reason: z.string().trim().max(240).optional(),
+  phrases: z.array(z.string().trim().max(60)).max(4).optional(),
+});
+
 const newChapter = z.object({
   personName: z.string().trim().min(1).max(80),
   personEmail: email,
@@ -53,6 +62,7 @@ const newChapter = z.object({
   starterEmail: email,
   guests: z.array(guest).max(40),
   items: z.array(suggestion).max(EIGHT).optional(),
+  gaps: z.array(gapConcept).max(4).optional(),
 });
 
 const reference = () =>
@@ -171,6 +181,21 @@ export const startChapter = createServerFn({ method: "POST" })
           name: row.name,
           email: row.email,
           approved: false,
+        })),
+      );
+    }
+
+    // What the shop could not answer, kept with the chapter so the shelf can be
+    // stocked later. An idea only: none of these become items.
+    if (data.gaps?.length) {
+      await service.entities.InventoryIdea.bulkCreate(
+        data.gaps.map((row) => ({
+          chapter_id: chapter.id,
+          concept: row.concept,
+          detail: row.detail ?? "",
+          category: row.category ?? "",
+          reason: row.reason ?? "",
+          phrases: JSON.stringify((row.phrases ?? []).filter(Boolean)),
         })),
       );
     }

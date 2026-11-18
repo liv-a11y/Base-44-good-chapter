@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { startChapter } from "@/lib/server-fns";
 import { BUDGET_PATHS } from "@/lib/chapter-types";
+import { questionsFor } from "@/lib/chapter-questions";
 import StartLayout from "@/components/start/StartLayout";
 import ChapterSoFar from "@/components/start/ChapterSoFar";
 import PathStep from "@/components/start/steps/PathStep";
@@ -14,6 +15,7 @@ import GuestsStep from "@/components/start/steps/GuestsStep";
 import InterviewStep from "@/components/start/steps/InterviewStep";
 import AnchorStep from "@/components/start/steps/AnchorStep";
 import PoolStep from "@/components/start/steps/PoolStep";
+import ReviewStep from "@/components/start/steps/ReviewStep";
 import DoneStep from "@/components/start/steps/DoneStep";
 import GiftPanel from "@/components/start/GiftPanel";
 
@@ -38,7 +40,7 @@ export const Route = createFileRoute("/start")({
 });
 
 /** Steps that show the live shop panel beside the question. */
-const PANEL_STEPS = ["prompt1", "prompt2", "prompt3", "anchor", "pool"];
+const PANEL_STEPS = ["prompt1", "prompt2", "prompt3", "anchor", "pool", "review"];
 
 /** A set amount skips the interview and the anchor. Everything else is shared. */
 const stepsFor = (path) => [
@@ -51,6 +53,7 @@ const stepsFor = (path) => [
   ...(BUDGET_PATHS.includes(path) ? ["pool"] : ["interview", "anchor"]),
   "starter",
   "guests",
+  "review",
 ];
 
 const EMPTY_FORM = {
@@ -80,7 +83,10 @@ function StartPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+  const [gaps, setGaps] = useState([]);
+  const [panelBusy, setPanelBusy] = useState(false);
 
+  const cues = questionsFor(form.chapterType);
   const steps = stepsFor(form.path);
   const current = steps[Math.min(step, steps.length - 1)];
 
@@ -97,6 +103,8 @@ function StartPage() {
     setForm(EMPTY_FORM);
     setResult(null);
     setError("");
+    setSuggestions([]);
+    setGaps([]);
     setStep(0);
   };
 
@@ -115,6 +123,7 @@ function StartPage() {
           poolAmount: BUDGET_PATHS.includes(form.path) ? Number(form.poolAmount) : undefined,
           guests,
           items: suggestions,
+          gaps,
         },
       });
       setResult(response);
@@ -138,9 +147,9 @@ function StartPage() {
     screen = (
       <PromptStep
         label="Prompt one of three"
-        question="What do they always wear?"
-        hint="A jacket they replace every year. The same boots. A ring they never take off."
-        placeholder="The same grey wool coat, every day, from the start of October."
+        question={cues.cues[0].question}
+        hint={cues.cues[0].hint}
+        placeholder={cues.cues[0].placeholder}
         value={form.alwaysWears}
         onChange={(value) => update({ alwaysWears: value })}
         onNext={goNext}
@@ -151,9 +160,9 @@ function StartPage() {
     screen = (
       <PromptStep
         label="Prompt two of three"
-        question="What do they rewatch?"
-        hint="Not their favourite film. The one that is always on in the background."
-        placeholder="The same cooking show, from the start, every winter."
+        question={cues.cues[1].question}
+        hint={cues.cues[1].hint}
+        placeholder={cues.cues[1].placeholder}
         value={form.rewatches}
         onChange={(value) => update({ rewatches: value })}
         onNext={goNext}
@@ -164,9 +173,9 @@ function StartPage() {
     screen = (
       <PromptStep
         label="Prompt three of three"
-        question="What would they never buy themselves?"
-        hint="Something they would pick up, smile at, and put back."
-        placeholder="Anything that costs more than twenty dollars for the kitchen."
+        question={cues.cues[2].question}
+        hint={cues.cues[2].hint}
+        placeholder={cues.cues[2].placeholder}
         value={form.neverBuys}
         onChange={(value) => update({ neverBuys: value })}
         onNext={goNext}
@@ -186,9 +195,21 @@ function StartPage() {
       <GuestsStep
         form={form}
         update={update}
-        onNext={finish}
+        onNext={goNext}
         onBack={goBack}
         error={error}
+      />
+    );
+  } else if (current === "review") {
+    screen = (
+      <ReviewStep
+        gaps={gaps}
+        checking={panelBusy}
+        suggestionCount={suggestions.length}
+        submitting={submitting}
+        error={error}
+        onNext={finish}
+        onBack={goBack}
       />
     );
   }
@@ -203,7 +224,11 @@ function StartPage() {
         anchorIdea: form.anchorIdea,
         cap: BUDGET_PATHS.includes(form.path) ? Number(form.poolAmount) || 0 : 0,
       }}
-      onChange={setSuggestions}
+      onChange={(payload) => {
+        setSuggestions(payload.items);
+        setGaps(payload.gaps);
+      }}
+      onBusy={setPanelBusy}
     />
   ) : null;
 

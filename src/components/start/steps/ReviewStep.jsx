@@ -1,6 +1,14 @@
 import StartQuestion from "@/components/start/StartQuestion";
 
-export default function ReviewStep({ gaps, suggestionCount, submitting, error, onNext, onBack }) {
+export default function ReviewStep({
+  gaps,
+  checking,
+  suggestionCount,
+  submitting,
+  error,
+  onNext,
+  onBack,
+}) {
   return (
     <StartQuestion
       label="Before it goes in"
@@ -42,6 +50,10 @@ export default function ReviewStep({ gaps, suggestionCount, submitting, error, o
             </li>
           ))}
         </ul>
+      ) : checking ? (
+        <p className="border border-dashed border-ink/30 px-4 py-6 text-[17px] leading-[1.4] text-ink/55">
+          Checking what the shop could not answer.
+        </p>
       ) : (
         <p className="border border-dashed border-ink/30 px-4 py-6 text-[17px] leading-[1.4] text-ink/60">
           Nothing was missing. Every search found something in the shop.

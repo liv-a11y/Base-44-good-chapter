@@ -19,7 +19,7 @@ export default function GuestsStep({ form, update, onNext, onBack, error }) {
       canContinue={allValid && filled.length > 0}
       onSubmit={onNext}
       onBack={onBack}
-      nextLabel="Finish"
+      nextLabel="Review"
       error={error}
     >
       <div className="space-y-3">
