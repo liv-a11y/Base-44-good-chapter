@@ -176,3 +176,100 @@ export const listInventoryIdeas = createServerFn({ method: "GET" })
       rows: [...counts.values()].sort((a, b) => b.count - a.count),
     };
   });
+
+/** Recent enough to say what the shop is being asked for now. */
+const WINDOW_DAYS = 60;
+
+const isRecent = (value) =>
+  Boolean(value) && new Date(value).getTime() >= Date.now() - WINDOW_DAYS * 86400000;
+
+/**
+ * Which shelves are thin. Every kept concept is grouped by the category the desk
+ * gave it, so the shop can see where the same gap keeps coming back, and which
+ * recent chapter asked for it.
+ */
+export const inventoryGapReport = createServerFn({ method: "GET" })
+  .middleware([requireUser])
+  .handler(async ({ context }) => {
+    const service = serviceFor(context);
+
+    const ideaPage = await service.entities.InventoryIdea.list({ sort: "-created_date", limit: 200 });
+    const ideas = ideaPage.items ?? ideaPage;
+
+    const chapterPage = await service.entities.Chapter.list({ sort: "-created_date", limit: 80 });
+    const chapterById = new Map((chapterPage.items ?? chapterPage).map((row) => [row.id, row]));
+
+    const byCategory = new Map();
+
+    ideas.forEach((row) => {
+      const label = (row.category || "").trim() || "Unfiled";
+      const entry = byCategory.get(label.toLowerCase()) ?? {
+        category: label,
+        asks: 0,
+        recent: 0,
+        chapters: new Set(),
+        concepts: new Map(),
+        latest: "",
+      };
+
+      entry.asks += 1;
+      entry.chapters.add(row.chapter_id);
+      if (isRecent(row.created_date)) entry.recent += 1;
+      if ((row.created_date || "") > entry.latest) entry.latest = row.created_date || "";
+
+      const concept = (row.concept || "").trim();
+      if (concept) {
+        const key = concept.toLowerCase();
+        const seen = entry.concepts.get(key) ?? { concept, count: 0 };
+        entry.concepts.set(key, { concept: seen.concept, count: seen.count + 1 });
+      }
+
+      byCategory.set(label.toLowerCase(), entry);
+    });
+
+    const categories = [...byCategory.values()]
+      .map((entry) => ({
+        category: entry.category,
+        asks: entry.asks,
+        recent: entry.recent,
+        chapters: entry.chapters.size,
+        latest: entry.latest,
+        concepts: [...entry.concepts.values()].sort((a, b) => b.count - a.count).slice(0, 3),
+      }))
+      .sort((a, b) => b.asks - a.asks || b.recent - a.recent);
+
+    // The chapters behind the recent asks, so a category reads against the
+    // request that produced it.
+    const asked = new Map();
+    ideas.filter((row) => isRecent(row.created_date)).forEach((row) => {
+      const entry = asked.get(row.chapter_id) ?? { at: "", rows: [] };
+      entry.rows.push({
+        concept: (row.concept || "").trim(),
+        category: (row.category || "").trim() || "Unfiled",
+      });
+      if ((row.created_date || "") > entry.at) entry.at = row.created_date || "";
+      asked.set(row.chapter_id, entry);
+    });
+
+    const recent = [...asked.entries()]
+      .map(([chapterId, entry]) => {
+        const chapter = chapterById.get(chapterId);
+        return {
+          chapter_id: chapterId,
+          person_name: chapter?.person_name || "A chapter",
+          chapter_type: chapter?.chapter_type || "Not given",
+          at: entry.at,
+          concepts: entry.rows.filter((row) => row.concept).slice(0, 4),
+        };
+      })
+      .sort((a, b) => (a.at < b.at ? 1 : -1))
+      .slice(0, 6);
+
+    return {
+      total: ideas.length,
+      recentTotal: ideas.filter((row) => isRecent(row.created_date)).length,
+      windowDays: WINDOW_DAYS,
+      categories,
+      recent,
+    };
+  });

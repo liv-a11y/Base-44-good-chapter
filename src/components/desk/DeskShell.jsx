@@ -14,6 +14,9 @@ export default function DeskShell({ children }) {
             <Link to="/desk" className="gc-label pb-0.5 text-plaster/65">
               Chapters
             </Link>
+            <Link to="/desk/gaps" className="gc-label pb-0.5 text-plaster/65">
+              Gaps
+            </Link>
             <Link to="/desk/requests" className="gc-label pb-0.5 text-plaster/65">
               Requests
             </Link>
