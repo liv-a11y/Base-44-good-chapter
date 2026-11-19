@@ -1,6 +1,7 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { getGuestChapter, claimItem } from "@/lib/guest-fns";
+import { startGuestCheckout } from "@/lib/giving-fns";
 import Wordmark from "@/components/site/Wordmark";
 import GuestItem from "@/components/guest/GuestItem";
 import PrivateIdeas from "@/components/guest/PrivateIdeas";
@@ -28,10 +29,13 @@ function GuestChapter() {
   const chapter = Route.useLoaderData();
   const { token } = Route.useParams();
   const claim = useServerFn(claimItem);
+  const checkout = useServerFn(startGuestCheckout);
 
   const first = (chapter.person_name || "").split(/\s+/)[0] || "their";
   const onClaim = (itemId, displayName) =>
     claim({ data: { token, item_id: itemId, display_name: displayName } });
+  const onContribute = (itemId, amount) =>
+    checkout({ data: { token, item_id: itemId, amount } });
 
   return (
     <div className="min-h-screen bg-plaster">
@@ -48,8 +52,8 @@ function GuestChapter() {
 
         {chapter.open ? (
           <p className="mt-6 max-w-[46ch] text-[21px] leading-[1.38] text-ink/85">
-            Eight things {first} read through and said yes to. Take the one you would most like to
-            give. Nothing here was picked from a catalogue, and nothing is a request for money.
+            Eight things {first} read through and said yes to. Take one whole, or put something in
+            toward one that takes more than one person. Nothing here was picked from a catalogue.
           </p>
         ) : (
           <p className="mt-6 max-w-[44ch] border-l border-ink pl-4 text-[21px] leading-[1.4]">
@@ -69,7 +73,9 @@ function GuestChapter() {
                 item={item}
                 index={index}
                 open={chapter.open}
+                checkoutReady={Boolean(chapter.checkout_ready)}
                 onClaim={onClaim}
+                onContribute={onContribute}
               />
             ))}
           </div>

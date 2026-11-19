@@ -7,6 +7,7 @@ import DrawingPlaceholder from "@/components/site/DrawingPlaceholder";
 import { addItem, replaceItem, reorderItems } from "@/lib/curator-fns";
 import ItemDialog from "@/components/desk/ItemDialog";
 import ShopSearch from "@/components/desk/ShopSearch";
+import GivingControl from "@/components/desk/GivingControl";
 
 const EIGHT = 8;
 
@@ -137,6 +138,8 @@ export default function ItemSlots({ chapterId, items }) {
                   <p className={`gc-label mt-2 ${answerTone(item.status)}`}>
                     {answerLabel(item.status)}
                   </p>
+
+                  <GivingControl chapterId={chapterId} item={item} />
 
                   {item.claim ? (
                     <p className="gc-label mt-1 text-ink/55">Taken by {item.claim}</p>

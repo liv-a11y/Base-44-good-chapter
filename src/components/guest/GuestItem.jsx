@@ -2,15 +2,20 @@ import { useState } from "react";
 import { Image } from "@/components/ui/image";
 import DrawingPlaceholder from "@/components/site/DrawingPlaceholder";
 import ClaimForm from "@/components/guest/ClaimForm";
+import PoolProgress from "@/components/guest/PoolProgress";
+import PoolForm from "@/components/guest/PoolForm";
 
-const money = (value) => (value == null ? "" : `$${value}`);
+const money = (value) => (value == null ? "" : `$${Number(value).toLocaleString("en-US")}`);
 
-/** One of the eight that the person approved, with a guest's way to take it. */
-export default function GuestItem({ item, index, open, onClaim }) {
+/** One of the eight that the person approved, with a guest's way to give it. */
+export default function GuestItem({ item, index, open, checkoutReady, onClaim, onContribute }) {
   const [claim, setClaim] = useState(item.claim);
   const [asking, setAsking] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+
+  const pooled = item.giving_mode === "pool";
+  const remaining = Math.max(0, (item.pool_target || 0) - (item.collected || 0));
 
   const take = async (displayName) => {
     setSaving(true);
@@ -25,6 +30,27 @@ export default function GuestItem({ item, index, open, onClaim }) {
       setAsking(false);
     } catch {
       setError("That did not save. Open your link again and try once more.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const contribute = async (amount) => {
+    setSaving(true);
+    setError("");
+    try {
+      const result = await onContribute(item.id, amount);
+      if (result?.url) {
+        window.location.href = result.url;
+        return;
+      }
+      setError(
+        result?.reason === "full"
+          ? "That one filled up just now."
+          : "Checkout could not open. Try once more.",
+      );
+    } catch {
+      setError("Checkout could not open. Try once more.");
     } finally {
       setSaving(false);
     }
@@ -52,7 +78,9 @@ export default function GuestItem({ item, index, open, onClaim }) {
 
         <div className="mt-3 flex items-baseline justify-between gap-3">
           <span className="gc-label truncate text-ink/45">{item.source}</span>
-          <span className="gc-spec shrink-0 text-ink">{money(item.price)}</span>
+          <span className="gc-spec shrink-0 text-ink">
+            {pooled ? `${money(item.pool_target)} together` : money(item.price)}
+          </span>
         </div>
 
         {item.source_url ? (
@@ -67,7 +95,28 @@ export default function GuestItem({ item, index, open, onClaim }) {
         ) : null}
 
         <div className="mt-auto pt-4">
-          {claim ? (
+          {pooled ? (
+            <>
+              <PoolProgress
+                collected={item.collected || 0}
+                target={item.pool_target || 0}
+                givers={item.givers || 0}
+              />
+              {!open ? (
+                <p className="gc-label mt-4 text-ink/40">Not open</p>
+              ) : remaining <= 0 ? (
+                <p className="gc-label mt-4 text-cobalt">Full, and on its way to them</p>
+              ) : (
+                <PoolForm
+                  remaining={remaining}
+                  ready={checkoutReady}
+                  saving={saving}
+                  error={error}
+                  onContribute={contribute}
+                />
+              )}
+            </>
+          ) : claim ? (
             <div className="border-t border-ink/25 pt-4">
               <p className={`gc-label ${mine ? "text-cobalt" : "text-ink/45"}`}>
                 {mine ? "Yours to give" : "Taken"}
@@ -78,6 +127,20 @@ export default function GuestItem({ item, index, open, onClaim }) {
             </div>
           ) : !open ? (
             <p className="gc-label text-ink/40">Not open</p>
+          ) : checkoutReady ? (
+            <button
+              type="button"
+              className="gc-btn w-full justify-between"
+              disabled={saving}
+              onClick={() => contribute()}
+            >
+              <span className="gc-btn-label">
+                {saving ? "Opening checkout" : "Buy this one"}
+              </span>
+              <span className="gc-btn-arrow" aria-hidden="true">
+                →
+              </span>
+            </button>
           ) : asking ? (
             <ClaimForm
               saving={saving}

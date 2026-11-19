@@ -30,6 +30,23 @@
       "type": "string",
       "description": "Why the curator chose this for this person."
     },
+    "giving_mode": {
+      "type": "string",
+      "enum": [
+        "individual",
+        "pool"
+      ],
+      "enumColors": [
+        "blue",
+        "green"
+      ],
+      "default": "individual",
+      "description": "One guest buys the whole thing, or several put in toward it."
+    },
+    "pool_target": {
+      "type": "number",
+      "description": "What a pooled item needs in total before it can be bought. Nothing moves until it is full."
+    },
     "status": {
       "type": "string",
       "enum": [

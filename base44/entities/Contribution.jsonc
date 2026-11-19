@@ -1,0 +1,84 @@
+{
+  "name": "Contribution",
+  "description": "One guest's money toward one item: a whole individual item, or their share of a pooled one. The amount is always set by the server from the approved item, never by the browser.",
+  "type": "object",
+  "properties": {
+    "chapter_id": {
+      "type": "string"
+    },
+    "item_id": {
+      "type": "string"
+    },
+    "guest_id": {
+      "type": "string"
+    },
+    "display_name": {
+      "type": "string",
+      "description": "What is shown next to what they put in."
+    },
+    "amount": {
+      "type": "number",
+      "description": "In dollars. Individual items are the approved price. Pooled items are capped at what is still missing."
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "individual",
+        "pool"
+      ],
+      "enumColors": [
+        "blue",
+        "green"
+      ],
+      "default": "individual"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "paid",
+        "failed"
+      ],
+      "enumColors": [
+        "yellow",
+        "green",
+        "red"
+      ],
+      "default": "pending",
+      "description": "Only paid counts toward an item. Pending means checkout was opened and not finished."
+    },
+    "payment_reference": {
+      "type": "string"
+    },
+    "paid_at": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "chapter_id",
+    "item_id",
+    "amount"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

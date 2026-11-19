@@ -1,21 +1,23 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { paymentsReady } from "@/lib/payments";
 
 /** Guests only ever see a chapter once it has gone out to them. */
-const OPEN_STATE = "sent_to_guests";
+export const OPEN_STATE = "sent_to_guests";
 
 /** And never before the person has answered the letter. */
-const personSaidYes = (chapter) => (chapter.person_decision || "pending") === "accepted";
+export const personSaidYes = (chapter) =>
+  (chapter.person_decision || "pending") === "accepted";
 
 /** The person's yes is the only thing that makes an item visible to guests. */
-const VISIBLE = ["approved", "given"];
+export const VISIBLE = ["approved", "given"];
 
-const guestByToken = async (service, token) => {
+export const guestByToken = async (service, token) => {
   const page = await service.entities.Guest.filter({ guest_token: token }, { limit: 1 });
   return (page.items ?? page)[0] ?? null;
 };
 
-const findChapter = (service, id) =>
+export const findChapter = (service, id) =>
   service.entities.Chapter.get(id).catch((error) => {
     if (error?.status === 404) return null;
     throw error;
@@ -46,7 +48,15 @@ export const getGuestChapter = createServerFn({ method: "GET" })
     );
     const claims = claimPage.items ?? claimPage;
 
+    // Only money the provider confirmed counts toward an item.
+    const paidPage = await service.entities.Contribution.filter(
+      { chapter_id: chapter.id, status: "paid" },
+      { limit: 200 },
+    );
+    const paid = paidPage.items ?? paidPage;
+
     return {
+      checkout_ready: paymentsReady(),
       person_name: chapter.person_name,
       starter_name: chapter.starter_name || "A friend",
       chapter_type: chapter.chapter_type,
@@ -58,6 +68,11 @@ export const getGuestChapter = createServerFn({ method: "GET" })
         .filter((item) => VISIBLE.includes(item.status))
         .map((item) => {
           const claim = claims.find((row) => row.item_id === item.id);
+          const given = paid.filter((row) => row.item_id === item.id);
+          const collected = given.reduce((sum, row) => sum + (row.amount || 0), 0);
+          const mineGiven = given
+            .filter((row) => row.guest_id === guest.id)
+            .reduce((sum, row) => sum + (row.amount || 0), 0);
           return {
             id: item.id,
             name: item.name,
@@ -66,6 +81,11 @@ export const getGuestChapter = createServerFn({ method: "GET" })
             source: item.source || "",
             source_url: item.source_url || "",
             why: item.why || "",
+            giving_mode: item.giving_mode === "pool" ? "pool" : "individual",
+            pool_target: item.pool_target ?? 0,
+            collected,
+            my_amount: mineGiven,
+            givers: given.length,
             claim: claim
               ? {
                   display_name: claim.display_name || "",

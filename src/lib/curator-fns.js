@@ -91,6 +91,11 @@ export const getChapter = createServerFn({ method: "GET" })
       { chapter_id: chapter.id },
       { sort: "-created_date", limit: 20 },
     );
+    const paidPage = await service.entities.Contribution.filter(
+      { chapter_id: chapter.id, status: "paid" },
+      { limit: 200 },
+    );
+    const paid = paidPage.items ?? paidPage;
 
     return {
       chapter,
@@ -106,6 +111,11 @@ export const getChapter = createServerFn({ method: "GET" })
           source_url: item.source_url || "",
           why: item.why || "",
           status: item.status,
+          giving_mode: item.giving_mode === "pool" ? "pool" : "individual",
+          pool_target: item.pool_target ?? 0,
+          collected: paid
+            .filter((row) => row.item_id === item.id)
+            .reduce((sum, row) => sum + (row.amount || 0), 0),
           claim: claim ? claim.display_name || "Someone who cares" : "",
         };
       }),
@@ -167,6 +177,56 @@ export const addItem = createServerFn({ method: "POST" })
       why: data.why,
       status: "proposed",
     });
+  });
+
+/**
+ * The curator decides how one item is given: bought whole by one guest, or
+ * filled by several putting in toward a target.
+ */
+export const setItemGiving = createServerFn({ method: "POST" })
+  .middleware([requireUser])
+  .validator(
+    z.object({
+      chapter_id: z.string().min(1),
+      item_id: z.string().min(1),
+      giving_mode: z.enum(["individual", "pool"]),
+      pool_target: z.number().min(0).max(100000).optional(),
+    }),
+  )
+  .handler(async ({ data, context }) => {
+    const service = serviceFor(context);
+
+    const item = await service.entities.Item.get(data.item_id).catch((error) => {
+      if (error?.status === 404) return null;
+      throw error;
+    });
+    if (!item || item.chapter_id !== data.chapter_id) {
+      throw Object.assign(new Error("That item is not in this chapter"), { status: 400 });
+    }
+
+    if (data.giving_mode === "individual") {
+      await service.entities.Item.update(item.id, {
+        giving_mode: "individual",
+        pool_target: 0,
+      });
+      return { ok: true };
+    }
+
+    const target = Number(data.pool_target ?? item.price ?? 0);
+    if (!target || target < 1) {
+      throw Object.assign(new Error("A pooled item needs a target amount"), { status: 400 });
+    }
+
+    const takenPage = await service.entities.Claim.filter({ item_id: item.id }, { limit: 1 });
+    if ((takenPage.items ?? takenPage).length) {
+      throw Object.assign(new Error("Someone already took this one"), { status: 400 });
+    }
+
+    await service.entities.Item.update(item.id, {
+      giving_mode: "pool",
+      pool_target: target,
+    });
+    return { ok: true };
   });
 
 export const reorderItems = createServerFn({ method: "POST" })
