@@ -1,0 +1,40 @@
+{
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "chapter_payments",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "confirm_contributions": {
+          "call": "invoke_server_route",
+          "with": {
+            "path": "/api/payments/settle",
+            "body": {
+              "checkout_id": "${ .trigger.checkout_id }",
+              "amount": "${ .trigger.amount }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Confirm contributions",
+            "description": "Marks every paid contribution and takes its item"
+          }
+        }
+      }
+    ]
+  },
+  "description": "Confirms contributions when the payment provider says the money arrived, whether or not the guest came back.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "app_payment",
+      "events": [
+        "payment_succeeded"
+      ]
+    }
+  },
+  "name": "Chapter Payments"
+}

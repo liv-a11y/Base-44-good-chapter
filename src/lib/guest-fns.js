@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { paymentsReady } from "@/lib/payments";
+import { settleGuestContributions } from "@/lib/contributions";
 
 /** Guests only ever see a chapter once it has gone out to them. */
 export const OPEN_STATE = "sent_to_guests";
@@ -37,6 +38,9 @@ export const getGuestChapter = createServerFn({ method: "GET" })
 
     const chapter = await findChapter(service, guest.chapter_id);
     if (!chapter) return null;
+
+    // A guest coming back from checkout gets their answer here, never from the URL.
+    await settleGuestContributions(service, guest.id);
 
     const itemPage = await service.entities.Item.filter(
       { chapter_id: chapter.id },

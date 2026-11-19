@@ -7,7 +7,7 @@ import {
   guestByToken,
   personSaidYes,
 } from "@/lib/guest-fns";
-import { createPaymentSession, verifyPayment } from "@/lib/payments";
+import { createPaymentSession } from "@/lib/payments";
 
 const money = (value) => Math.round((Number(value) || 0) * 100) / 100;
 
@@ -73,17 +73,17 @@ export const startGuestCheckout = createServerFn({ method: "POST" })
 
     let session;
     try {
-      session = await createPaymentSession({
+      session = await createPaymentSession(service, {
         amount,
-        kind: pooled ? "pool" : "individual",
         itemName: item.name,
-        personName: chapter.person_name,
-        chapterId: chapter.id,
-        itemId: item.id,
-        guestId: guest.id,
+        successPath: `/guest/${data.token}`,
       });
-    } catch {
-      return { ok: false, reason: "payments_off" };
+    } catch (error) {
+      if (error?.code === "amount_below_minimum") return { ok: false, reason: "amount" };
+      return {
+        ok: false,
+        reason: error?.code === "payments_not_connected" ? "payments_off" : "checkout_failed",
+      };
     }
 
     await service.entities.Contribution.create({
@@ -100,56 +100,5 @@ export const startGuestCheckout = createServerFn({ method: "POST" })
     return { ok: true, url: session.url, amount };
   });
 
-/**
- * Runs when the guest comes back from checkout. The provider is asked first;
- * a contribution is only marked paid, and an individual item only claimed,
- * once the provider says the money arrived.
- */
-export const confirmGuestCheckout = createServerFn({ method: "POST" })
-  .validator(
-    z.object({
-      token: z.string().trim().min(12).max(64),
-      contribution_id: z.string().trim().min(1).max(64),
-    }),
-  )
-  .handler(async ({ data, context }) => {
-    const service = context.getBase44().asServiceRole;
-
-    const guest = await guestByToken(service, data.token);
-    if (!guest) return { ok: false };
-
-    const contribution = await service.entities.Contribution.get(data.contribution_id).catch(
-      (error) => {
-        if (error?.status === 404) return null;
-        throw error;
-      },
-    );
-    if (!contribution || contribution.guest_id !== guest.id) return { ok: false };
-    if (contribution.status === "paid") return { ok: true };
-
-    const payment = await verifyPayment(contribution.payment_reference);
-    if (!payment?.paid) return { ok: false };
-
-    await service.entities.Contribution.update(contribution.id, {
-      status: "paid",
-      paid_at: new Date().toISOString(),
-    });
-
-    if (contribution.kind === "individual") {
-      const takenPage = await service.entities.Claim.filter(
-        { item_id: contribution.item_id },
-        { limit: 1 },
-      );
-      if (!(takenPage.items ?? takenPage).length) {
-        await service.entities.Claim.create({
-          chapter_id: contribution.chapter_id,
-          item_id: contribution.item_id,
-          guest_id: guest.id,
-          display_name: contribution.display_name || "",
-          claimed_at: new Date().toISOString(),
-        });
-      }
-    }
-
-    return { ok: true };
-  });
+// A guest coming back from checkout is settled by getGuestChapter, which asks
+// the provider about anything still open before it answers.

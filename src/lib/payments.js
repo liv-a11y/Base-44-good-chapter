@@ -1,16 +1,25 @@
 /**
- * The one place card checkout is opened and confirmed. Card payments are not
- * connected to this app yet, so every call reports not ready and nothing is
- * ever charged. When the provider is connected this is the only file that
- * changes: the amounts, the records and the guest screens stay as they are.
+ * The one place card checkout is opened and confirmed. Base44 Payments holds the
+ * account, so no key lives here. Amounts always arrive from the server, which
+ * reads them from the approved chapter, never from the browser.
  */
-export const paymentsReady = () => false;
+export const paymentsReady = () => true;
 
-export const createPaymentSession = async () => {
-  throw Object.assign(new Error("Card checkout is not connected yet"), {
-    status: 503,
-    code: "PAYMENTS_OFF",
+/** Opens a checkout for one contribution and returns its id and redirect. */
+export const createPaymentSession = async (service, { amount, itemName, successPath }) => {
+  const checkout = await service.payments.createCheckout({
+    items: [{ name: itemName, amount: Math.round(amount * 100), quantity: 1 }],
+    success_path: successPath,
   });
+
+  return { reference: checkout.checkout_id, url: checkout.redirect_url };
 };
 
-export const verifyPayment = async () => null;
+/** Asks the provider whether one checkout was really paid. */
+export const isCheckoutPaid = async (service, checkoutId) => {
+  if (!checkoutId) return false;
+
+  const purchases = await service.payments.listPurchases({ checkout_id: checkoutId });
+  const rows = purchases?.items ?? purchases ?? [];
+  return rows[0]?.status === "paid";
+};
