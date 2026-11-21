@@ -1,52 +1,72 @@
 import { cn } from "@/lib/utils";
 
-/** One slide: 16:9, plaster ground, ink hairline frame, type sized in cqi. */
-export function Slide({ children, className, tone = "plaster" }) {
+/** One sheet: bone ground, generous margin, content on a twelve column grid. */
+export function Slide({ children, className, tone = "bone" }) {
   return (
-    <section
-      className={cn(
-        "deck-slide border",
-        tone === "clay"
-          ? "border-plaster/35 bg-clay text-plaster"
-          : "border-ink bg-plaster text-ink",
-        className,
-      )}
-    >
-      {children}
+    <section className={cn("dk-slide", tone === "flip" && "dk-slide--flip", className)}>
+      <div className="dk-inner">{children}</div>
     </section>
   );
 }
 
-export function Label({ children, className }) {
-  return <p className={cn("deck-label", className)}>{children}</p>;
-}
-
-export function Title({ children, className }) {
-  return <h2 className={cn("deck-title font-heading", className)}>{children}</h2>;
-}
-
-export function Sub({ children, className }) {
-  return <p className={cn("deck-sub font-heading", className)}>{children}</p>;
-}
-
-export function Body({ children, className }) {
-  return <p className={cn("deck-body", className)}>{children}</p>;
-}
-
-export function Spec({ children, className }) {
-  return <p className={cn("deck-spec", className)}>{children}</p>;
-}
-
-/** The one loud line that closes a slide. */
-export function So({ children, className }) {
+/** Small caps kicker, mono folio, and the rule that draws across between them. */
+export function Mast({ label, index }) {
   return (
-    <div className={cn("deck-so", className)}>
-      <span className="deck-label text-clay">So</span>
-      <p className="deck-so-text font-heading">{children}</p>
+    <div className="dk-mast">
+      <span className="dk-kicker">{label}</span>
+      <span className="dk-index">{index}</span>
     </div>
   );
 }
 
-export function Rule({ className }) {
-  return <div className={cn("deck-hair", className)} />;
+export function Statement({ children, className, size = "lg" }) {
+  return (
+    <h2
+      className={cn(
+        "dk-statement",
+        size === "sm" && "dk-statement--sm",
+        size === "xs" && "dk-statement--xs",
+        className,
+      )}
+    >
+      {children}
+    </h2>
+  );
+}
+
+export function Lede({ children, className }) {
+  return <p className={cn("dk-lede", className)}>{children}</p>;
+}
+
+export function Small({ children, className }) {
+  return <p className={cn("dk-small", className)}>{children}</p>;
+}
+
+export function Note({ children, className }) {
+  return <p className={cn("dk-note", className)}>{children}</p>;
+}
+
+/** The one number a slide turns on. */
+export function Figure({ children, className, size = "md" }) {
+  const sizes = {
+    sm: "dk-figure--sm",
+    md: "dk-figure--md",
+    lg: "dk-figure--lg",
+    huge: "dk-figure--huge",
+  };
+  return <p className={cn("dk-figure", sizes[size], className)}>{children}</p>;
+}
+
+/** The single terracotta square: it marks the figure the slide turns on. */
+export function Square({ className }) {
+  return <span aria-hidden="true" className={cn("dk-square", className)} />;
+}
+
+export function So({ children }) {
+  return (
+    <div className="dk-so">
+      <span className="dk-kicker dk-accent">So</span>
+      <span className="dk-so-text">{children}</span>
+    </div>
+  );
 }

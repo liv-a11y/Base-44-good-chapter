@@ -1,4 +1,8 @@
-import { Body, Label, Slide, So, Spec, Title } from "@/components/deck/DeckParts";
+import { Figure, Mast, Note, Slide, Small, So, Statement } from "@/components/deck/DeckParts";
+import DeckPhoto from "@/components/deck/DeckPhoto";
+
+const KEY =
+  "https://media.base44.com/images/public/6af66f925ddaabe6b3b327a8/7b3708bfa_generated_b5209139.jpg";
 
 const EMAIL = [
   ["From the friend.", "Sent in Jess's name. Replies go straight to her."],
@@ -45,25 +49,44 @@ const ROWS = [
   ["The real default", "A group text and a Venmo pool", "Free, instant, no list, no approval, no follow-up."],
 ];
 
+const pad = (n) => String(n).padStart(2, "0");
+
+function ChapterRows({ from }) {
+  return (
+    <table className="dk-table">
+      <tbody>
+        {CHAPTERS.slice(from).map((name, i) => (
+          <tr key={name}>
+            <td className="dk-n dk-accent w-[4cqi]">{pad(from + i + 1)}</td>
+            <td>{name}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
 export function GuestEmail() {
   return (
     <Slide>
-      <Label>09 · What her people receive</Label>
-      <div className="grid grid-cols-[0.9fr_1.1fr] items-start gap-[3.5cqi]">
-        <div>
-          <Title>A note from a friend. Never an ask from her.</Title>
-          <Body className="mt-[1.6cqi] opacity-80">
+      <Mast label="09 · What her people receive" index="07 / 18" />
+      <div className="grid grid-cols-12 gap-x-[2.4cqi]">
+        <div className="col-span-6">
+          <Statement>A note from a friend. Never an ask from her.</Statement>
+          <Statement size="xs" className="mt-[1.2cqi] opacity-65">
             The invitation is the whole product surface a guest ever sees.
-          </Body>
+          </Statement>
         </div>
-        <div>
-          {EMAIL.map(([head, line]) => (
-            <div key={head} className="border-t border-ink/25 py-[1.1cqi]">
-              <Body className="text-[1.45cqi] font-semibold">{head}</Body>
-              <Body className="mt-[0.35cqi] text-[1.3cqi] opacity-80">{line}</Body>
-            </div>
-          ))}
-        </div>
+        {[EMAIL.slice(0, 2), EMAIL.slice(2)].map((group) => (
+          <div key={group[0][0]} className="col-span-3 dk-col">
+            {group.map(([head, line]) => (
+              <div key={head} className="dk-row">
+                <Small className="font-semibold">{head}</Small>
+                <Small className="mt-[0.35cqi] opacity-75">{line}</Small>
+              </div>
+            ))}
+          </div>
+        ))}
       </div>
       <So>Up to twenty people see who started it. Nobody hears her ask.</So>
     </Slide>
@@ -73,17 +96,21 @@ export function GuestEmail() {
 export function Product() {
   return (
     <Slide>
-      <Label>10 · The product</Label>
-      <Title className="max-w-[70%]">Eight items. Four price bands. One reason each.</Title>
-      <div className="grid grid-cols-4 gap-[2.2cqi]">
-        {BANDS.map((band) => (
-          <div key={band.name} className="border-t border-ink pt-[1.1cqi]">
-            <span className="deck-figure font-heading text-clay">{band.count}</span>
-            <Body className="mt-[0.6cqi] text-[1.4cqi] font-semibold">{band.name}</Body>
-            <Spec className="mt-[0.4cqi]">{band.price}</Spec>
-            <Body className="mt-[0.6cqi] text-[1.25cqi] opacity-80">{band.line}</Body>
-          </div>
-        ))}
+      <Mast label="10 · The product" index="08 / 18" />
+      <div>
+        <Statement className="max-w-[66%]">Eight items. Four price bands. One reason each.</Statement>
+        <div className="mt-[2cqi] grid grid-cols-12 gap-x-[2.4cqi]">
+          {BANDS.map((band) => (
+            <div key={band.name} className="col-span-3 dk-col">
+              <Figure size="lg">{band.count}</Figure>
+              <Statement size="xs" className="mt-[0.5cqi]">
+                {band.name}
+              </Statement>
+              <Note className="mt-[0.5cqi]">{band.price}</Note>
+              <Small className="mt-[0.6cqi] opacity-80">{band.line}</Small>
+            </div>
+          ))}
+        </div>
       </div>
       <So>A guest can choose in five minutes. The person can remove anything.</So>
     </Slide>
@@ -93,31 +120,29 @@ export function Product() {
 export function Chapters() {
   return (
     <Slide>
-      <Label>11 · Occasions</Label>
-      <div className="grid grid-cols-[1.1fr_0.9fr] items-start gap-[3.5cqi]">
-        <div>
-          <Title className="deck-title-sm">Choose your chapter.</Title>
-          <Body className="mt-[1.2cqi] opacity-80">
+      <Mast label="11 · Occasions" index="09 / 18" />
+      <div className="grid grid-cols-12 gap-x-[2.4cqi]">
+        <div className="col-span-5">
+          <Statement>Choose your chapter.</Statement>
+          <Small className="mt-[1.2cqi] opacity-80">
             Every occasion where love wants to show up, but the person would never ask for
             themselves.
-          </Body>
-          <div className="mt-[1.6cqi] border border-ink bg-clay px-[1.5cqi] py-[1.2cqi] text-plaster">
-            <Spec>By design</Spec>
-            <Body className="mt-[0.4cqi] text-[1.35cqi]">
+          </Small>
+          <div className="mt-[1.4cqi] bg-terracotta px-[1.3cqi] py-[1.1cqi] text-bone">
+            <span className="dk-kicker">By design</span>
+            <Small className="mt-[0.4cqi]">
               No weddings. Weddings and babies have registries. Everything else got a card.
-            </Body>
+            </Small>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-x-[1.6cqi]">
-          {CHAPTERS.map((name, i) => (
-            <div
-              key={name}
-              className="flex items-baseline gap-[0.8cqi] border-t border-ink/25 py-[0.75cqi]"
-            >
-              <Spec className="text-cobalt">{String(i + 1).padStart(2, "0")}</Spec>
-              <Body className="text-[1.3cqi]">{name}</Body>
-            </div>
-          ))}
+        <div className="col-span-4 dk-col">
+          <ChapterRows from={0} />
+        </div>
+        <div className="col-span-3 dk-col">
+          <DeckPhoto src={KEY} alt="A house key on an envelope" className="h-[15cqi]" />
+          <div className="mt-[1cqi]">
+            <ChapterRows from={6} />
+          </div>
         </div>
       </div>
       <So>Start with home. Health chapters wait for legal review.</So>
@@ -128,26 +153,35 @@ export function Chapters() {
 export function Competition() {
   return (
     <Slide>
-      <Label>12 · Competition</Label>
-      <Title className="max-w-[76%]">
-        The big registries serve two days. Everything else gets a group text.
-      </Title>
+      <Mast label="12 · Competition" index="10 / 18" />
       <div>
-        <div className="grid grid-cols-[1.05fr_0.75fr_1.2fr] gap-[1.6cqi] border-t border-ink py-[0.7cqi]">
-          <Spec className="opacity-55">Occasion</Spec>
-          <Spec className="opacity-55">Who runs it</Spec>
-          <Spec className="opacity-55">What exists today</Spec>
-        </div>
-        {ROWS.map(([occasion, who, what]) => (
-          <div
-            key={occasion}
-            className="grid grid-cols-[1.05fr_0.75fr_1.2fr] items-baseline gap-[1.6cqi] border-t border-ink/20 py-[0.8cqi]"
-          >
-            <Body className="text-[1.3cqi] font-semibold">{occasion}</Body>
-            <Spec className={who === "No registry" ? "text-clay" : ""}>{who}</Spec>
-            <Body className="text-[1.22cqi] opacity-75">{what}</Body>
-          </div>
-        ))}
+        <Statement className="max-w-[80%]">
+          The big registries serve two days. Everything else gets a group text.
+        </Statement>
+        <table className="dk-table mt-[1.8cqi]">
+          <thead>
+            <tr>
+              <th>Occasion</th>
+              <th>Who runs it</th>
+              <th>What exists today</th>
+            </tr>
+          </thead>
+          <tbody>
+            {ROWS.map(([occasion, who, what]) => (
+              <tr key={occasion}>
+                <td className="dk-hang">
+                  <span className="font-semibold">{occasion}</span>
+                </td>
+                <td>
+                  <span className={who === "No registry" ? "dk-kicker dk-accent" : "dk-kicker opacity-70"}>
+                    {who}
+                  </span>
+                </td>
+                <td>{what}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
       <So>Two occasions have a registry. None has an approval step.</So>
     </Slide>

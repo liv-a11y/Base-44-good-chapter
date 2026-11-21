@@ -25,6 +25,11 @@ export default {
   			ink: '#651C1A', // burgundy: all text, all borders
   			cobalt: '#284CD6', // go
   			clay: '#C2402F', // the tag mark and one loud band
+  			// Investor deck
+  			bone: '#F4EFE6',
+  			graphite: '#22201E',
+  			terracotta: '#B4543A',
+  			sage: '#7C8A6E',
   			// Supporting, small doses
   			blush: '#E59A6C',
   			mustard: '#C1812B',

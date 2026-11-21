@@ -1,4 +1,4 @@
-import { Body, Label, Slide, So, Spec, Title } from "@/components/deck/DeckParts";
+import { Figure, Lede, Mast, Note, Slide, Small, So, Statement } from "@/components/deck/DeckParts";
 
 const LINES = [
   ["01", "Curated commission", "At launch", "8 to 12% on curated retail. Checkout on our site. Disclosed."],
@@ -64,17 +64,29 @@ const STAGES = [
 export function BusinessModel() {
   return (
     <Slide>
-      <Label>18 · Business model</Label>
-      <Title className="max-w-[62%]">Four lines. One loop.</Title>
-      <div className="grid grid-cols-4 gap-[2.2cqi]">
-        {LINES.map(([n, name, when, line]) => (
-          <div key={n} className="border-t border-ink pt-[1cqi]">
-            <Spec className="text-cobalt">{n}</Spec>
-            <Body className="mt-[0.5cqi] text-[1.35cqi] font-semibold">{name}</Body>
-            <Spec className="mt-[0.35cqi] opacity-55">{when}</Spec>
-            <Body className="mt-[0.7cqi] text-[1.2cqi] opacity-80">{line}</Body>
-          </div>
-        ))}
+      <Mast label="18 · Business model" index="15 / 18" />
+      <div className="grid grid-cols-12 gap-x-[2.4cqi]">
+        <div className="col-span-3">
+          <Statement>Four lines. One loop.</Statement>
+        </div>
+        <div className="col-span-9 dk-col">
+          <table className="dk-table">
+            <tbody>
+              {LINES.map(([n, name, when, line]) => (
+                <tr key={n}>
+                  <td className="dk-n dk-accent w-[3cqi]">{n}</td>
+                  <td className="w-[15cqi]">
+                    <span className="font-semibold">{name}</span>
+                  </td>
+                  <td className="w-[11cqi]">
+                    <span className="dk-kicker opacity-60">{when}</span>
+                  </td>
+                  <td>{line}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
       <So>Commission proves demand. Wholesale margin and editions pay for it.</So>
     </Slide>
@@ -84,19 +96,25 @@ export function BusinessModel() {
 export function MarginLadder() {
   return (
     <Slide>
-      <Label>19 · Margin ladder</Label>
-      <Title className="max-w-[66%]">The margin climbs. The inventory risk stays low.</Title>
-      <div className="grid grid-cols-3 gap-[2.6cqi]">
+      <Mast label="19 · Margin ladder" index="16 / 18" />
+      <div className="grid grid-cols-12 gap-x-[2.4cqi]">
+        <div className="col-span-3">
+          <Statement>The margin climbs. The inventory risk stays low.</Statement>
+        </div>
         {TIERS.map((row) => (
-          <div key={row.tier} className="border-t border-ink pt-[1cqi]">
-            <Spec className="opacity-55">{row.tier}</Spec>
-            <Body className="mt-[0.5cqi] text-[1.35cqi] font-semibold">{row.name}</Body>
-            <p className="deck-big font-heading text-clay">{row.take}</p>
-            <Spec className="opacity-60">per chapter</Spec>
-            <div className="mt-[0.8cqi] border-t border-ink/20 pt-[0.6cqi]">
-              <Spec>Margin {row.margin}</Spec>
-              <Spec className="mt-[0.3cqi] opacity-70">With anchor gift {row.anchor}</Spec>
-              <Spec className="mt-[0.3cqi] opacity-70">Risk {row.risk}</Spec>
+          <div key={row.tier} className="col-span-3 dk-col">
+            <span className="dk-kicker dk-accent">{row.tier}</span>
+            <Statement size="xs" className="mt-[0.5cqi]">
+              {row.name}
+            </Statement>
+            <Figure size="sm" className="mt-[0.7cqi]">
+              {row.take}
+            </Figure>
+            <Note className="mt-[0.4cqi] opacity-60">per chapter</Note>
+            <div className="dk-row mt-[0.7cqi]">
+              <Note>Margin {row.margin}</Note>
+              <Note className="mt-[0.3cqi] opacity-70">With anchor gift {row.anchor}</Note>
+              <Note className="mt-[0.3cqi] opacity-70">Risk {row.risk}</Note>
             </div>
           </div>
         ))}
@@ -109,39 +127,39 @@ export function MarginLadder() {
 export function Ask() {
   return (
     <Slide>
-      <Label>The ask</Label>
-      <div className="grid grid-cols-[0.95fr_1.05fr] items-start gap-[3.5cqi]">
-        <div>
-          <p className="deck-huge font-heading text-clay">$100K</p>
-          <Title className="deck-title-sm mt-[0.8cqi]">Released as the proof comes in.</Title>
-          <Body className="mt-[1.2cqi] text-[1.25cqi] opacity-80">
+      <Mast label="The ask" index="17 / 18" />
+      <div className="grid grid-cols-12 gap-x-[2.4cqi]">
+        <div className="col-span-6">
+          <Figure size="huge">$100K</Figure>
+          <Statement size="sm" className="mt-[0.9cqi]">
+            Released as the proof comes in.
+          </Statement>
+          <Lede className="mt-[1.1cqi] opacity-85">
             A proposed $100K Angel SAFE, released in stages. Terms, cap and stage sizes are set
             with counsel.
-          </Body>
+          </Lede>
+          <Note className="mt-[1.2cqi] opacity-65">
+            Q1 2027 · Released in stages
+            <br />
+            liv@goodchaptercollective.com
+          </Note>
         </div>
-        <div>
-          <Spec className="opacity-55">Where we are</Spec>
-          <div className="mt-[0.6cqi]">
-            {WHERE.map((line) => (
-              <div key={line} className="border-t border-ink/20 py-[0.55cqi]">
-                <Body className="text-[1.22cqi] opacity-85">{line}</Body>
-              </div>
-            ))}
-          </div>
-          <Spec className="mt-[1.2cqi] opacity-55">What the money proves</Spec>
-          <div className="mt-[0.6cqi]">
-            {PROVES.map((line) => (
-              <div key={line} className="flex items-baseline gap-[0.9cqi] border-t border-ink/20 py-[0.55cqi]">
-                <Spec className="text-cobalt">·</Spec>
-                <Body className="text-[1.22cqi]">{line}</Body>
-              </div>
-            ))}
-          </div>
+        <div className="col-span-3 dk-col">
+          <span className="dk-kicker dk-accent">Where we are</span>
+          {WHERE.map((line) => (
+            <div key={line} className="dk-row">
+              <Small className="opacity-85">{line}</Small>
+            </div>
+          ))}
         </div>
-      </div>
-      <div className="flex items-end justify-between gap-[2cqi] border-t border-ink pt-[1cqi]">
-        <Spec>Q1 2027 · Released in stages</Spec>
-        <Spec>liv@goodchaptercollective.com</Spec>
+        <div className="col-span-3 dk-col">
+          <span className="dk-kicker dk-accent">What the money proves</span>
+          {PROVES.map((line) => (
+            <div key={line} className="dk-row">
+              <Small className="opacity-85">{line}</Small>
+            </div>
+          ))}
+        </div>
       </div>
     </Slide>
   );
@@ -150,38 +168,44 @@ export function Ask() {
 export function UseOfFunds() {
   return (
     <Slide>
-      <Label>Use of funds</Label>
-      <div className="grid grid-cols-[1.05fr_0.95fr] items-start gap-[3.5cqi]">
-        <div>
-          <Title className="deck-title-sm">Four jobs.</Title>
-          <div className="mt-[1cqi]">
-            {USES.map(([name, amount, line]) => (
-              <div key={name} className="flex items-baseline gap-[1.2cqi] border-t border-ink/25 py-[0.8cqi]">
-                <Spec className="w-[5cqi] shrink-0 text-clay">{amount}</Spec>
-                <div>
-                  <Body className="text-[1.3cqi] font-semibold">{name}</Body>
-                  <Body className="mt-[0.25cqi] text-[1.15cqi] opacity-75">{line}</Body>
-                </div>
-              </div>
-            ))}
-          </div>
+      <Mast label="Use of funds" index="18 / 18" />
+      <div className="grid grid-cols-12 gap-x-[2.4cqi]">
+        <div className="col-span-6">
+          <Statement size="sm">Four jobs.</Statement>
+          <table className="dk-table mt-[1.2cqi]">
+            <tbody>
+              {USES.map(([name, amount, line]) => (
+                <tr key={name}>
+                  <td className="dk-hang">
+                    <span className="font-semibold">{name}</span>
+                    <Small className="mt-[0.25cqi] opacity-75">{line}</Small>
+                  </td>
+                  <td className="dk-n dk-accent">
+                    <span className="font-semibold">{amount}</span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-        <div>
-          <Title className="deck-title-sm">Three targets.</Title>
-          <div className="mt-[1cqi]">
-            {STAGES.map(([stage, when, line]) => (
-              <div key={stage} className="border-t border-ink/25 py-[0.8cqi]">
-                <div className="flex items-baseline justify-between gap-[1cqi]">
-                  <Body className="text-[1.3cqi] font-semibold">{stage}</Body>
-                  <Spec className="text-cobalt">{when}</Spec>
-                </div>
-                <Body className="mt-[0.3cqi] text-[1.15cqi] opacity-75">{line}</Body>
-              </div>
-            ))}
-          </div>
-          <Spec className="mt-[1cqi] opacity-55">
+        <div className="col-span-6 dk-col">
+          <Statement size="sm">Three targets.</Statement>
+          <table className="dk-table mt-[1.2cqi]">
+            <tbody>
+              {STAGES.map(([stage, when, line]) => (
+                <tr key={stage}>
+                  <td className="dk-hang">
+                    <span className="font-semibold">{stage}</span>{" "}
+                    <span className="dk-kicker dk-accent">{when}</span>
+                    <Small className="mt-[0.25cqi] opacity-75">{line}</Small>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <Note className="mt-[1cqi] opacity-55">
             The three stages sum to $100K and split the four lines on the left.
-          </Spec>
+          </Note>
         </div>
       </div>
       <So>Money follows proof. Each target unlocks the next stage.</So>

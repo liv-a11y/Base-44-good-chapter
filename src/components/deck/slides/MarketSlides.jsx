@@ -1,4 +1,4 @@
-import { Body, Label, Slide, So, Spec, Title } from "@/components/deck/DeckParts";
+import { Figure, Mast, Note, Slide, Small, So, Statement } from "@/components/deck/DeckParts";
 
 const SEGMENTS = [
   {
@@ -63,15 +63,19 @@ const REALTOR_POINTS = [
 export function Market() {
   return (
     <Slide>
-      <Label>13 · Serviceable market</Label>
-      <Title className="max-w-[70%]">Three segments. One mechanic.</Title>
-      <div className="grid grid-cols-3 gap-[2.6cqi]">
+      <Mast label="13 · Serviceable market" index="11 / 18" />
+      <div className="grid grid-cols-12 gap-x-[2.4cqi]">
+        <div className="col-span-3">
+          <Statement>Three segments. One mechanic.</Statement>
+        </div>
         {SEGMENTS.map((row) => (
-          <div key={row.name} className="border-t border-ink pt-[1.1cqi]">
-            <Spec>{row.name}</Spec>
-            <p className="deck-big font-heading text-clay">{row.size}</p>
-            <Spec className="mt-[0.5cqi] opacity-60">{row.events}</Spec>
-            <Body className="mt-[0.9cqi] text-[1.25cqi] opacity-80">{row.line}</Body>
+          <div key={row.name} className="col-span-3 dk-col">
+            <span className="dk-kicker dk-accent">{row.name}</span>
+            <Figure size="lg" className="mt-[0.7cqi]">
+              {row.size}
+            </Figure>
+            <Note className="mt-[0.5cqi] opacity-60">{row.events}</Note>
+            <Small className="mt-[0.8cqi] opacity-80">{row.line}</Small>
           </div>
         ))}
       </div>
@@ -83,26 +87,31 @@ export function Market() {
 export function Math() {
   return (
     <Slide>
-      <Label>14 · The math</Label>
-      <Title className="max-w-[70%]">The gap between the columns is the company.</Title>
+      <Mast label="14 · The math" index="12 / 18" />
       <div>
-        <div className="grid grid-cols-[1fr_0.7fr_0.7fr_1.15fr] gap-[1.4cqi] border-t border-ink py-[0.65cqi]">
-          <Spec className="opacity-55">Same formula</Spec>
-          <Spec className="opacity-55">Weddings</Spec>
-          <Spec className="opacity-55">Chapters</Spec>
-          <Spec className="opacity-55">The gap</Spec>
-        </div>
-        {MATH.map(([label, weddings, chapters, gap]) => (
-          <div
-            key={label}
-            className="grid grid-cols-[1fr_0.7fr_0.7fr_1.15fr] items-baseline gap-[1.4cqi] border-t border-ink/20 py-[0.65cqi]"
-          >
-            <Body className="text-[1.28cqi] font-semibold">{label}</Body>
-            <Spec className="opacity-60">{weddings}</Spec>
-            <Spec className="text-cobalt">{chapters}</Spec>
-            <Body className="text-[1.18cqi] opacity-75">{gap}</Body>
-          </div>
-        ))}
+        <Statement className="max-w-[74%]">The gap between the columns is the company.</Statement>
+        <table className="dk-table mt-[1.8cqi]">
+          <thead>
+            <tr>
+              <th>Same formula</th>
+              <th className="text-right">Weddings</th>
+              <th className="text-right">Chapters</th>
+              <th>The gap</th>
+            </tr>
+          </thead>
+          <tbody>
+            {MATH.map(([label, weddings, chapters, gap]) => (
+              <tr key={label}>
+                <td className="dk-hang">
+                  <span className="font-semibold">{label}</span>
+                </td>
+                <td className="dk-n opacity-60">{weddings}</td>
+                <td className="dk-n dk-accent">{chapters}</td>
+                <td>{gap}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
       <So>Each point of adoption is about $22M in gift volume.</So>
     </Slide>
@@ -112,18 +121,20 @@ export function Math() {
 export function Distribution() {
   return (
     <Slide>
-      <Label>16 · How it reaches people</Label>
-      <Title className="max-w-[78%]">
-        Partners find the first friend. The person never has to ask.
-      </Title>
-      <div className="grid grid-cols-4 gap-[2cqi]">
-        {CHANNELS.map((row) => (
-          <div key={row.name} className="border-t border-ink pt-[1cqi]">
-            <Body className="text-[1.35cqi] font-semibold">{row.name}</Body>
-            <Spec className="mt-[0.35cqi] text-clay">{row.note}</Spec>
-            <Body className="mt-[0.7cqi] text-[1.2cqi] opacity-80">{row.line}</Body>
-          </div>
-        ))}
+      <Mast label="16 · How it reaches people" index="13 / 18" />
+      <div>
+        <Statement className="max-w-[80%]">
+          Partners find the first friend. The person never has to ask.
+        </Statement>
+        <div className="mt-[2cqi] grid grid-cols-12 gap-x-[2.4cqi]">
+          {CHANNELS.map((row) => (
+            <div key={row.name} className="col-span-3 dk-col">
+              <Statement size="xs">{row.name}</Statement>
+              <span className="dk-kicker dk-accent mt-[0.5cqi] inline-block">{row.note}</span>
+              <Small className="mt-[0.7cqi] opacity-80">{row.line}</Small>
+            </div>
+          ))}
+        </div>
       </div>
       <So>Partners find the first friend. Guests start the next one.</So>
     </Slide>
@@ -133,18 +144,20 @@ export function Distribution() {
 export function Realtors() {
   return (
     <Slide>
-      <Label>17 · Why realtors say yes</Label>
-      <Title className="max-w-[64%]">Their name travels. The lift is low.</Title>
-      <div className="grid grid-cols-2 gap-x-[3cqi]">
-        {REALTOR_POINTS.map(([n, head, line]) => (
-          <div key={n} className="flex gap-[1.2cqi] border-t border-ink/25 py-[1cqi]">
-            <Spec className="text-cobalt">{n}</Spec>
-            <div>
-              <Body className="text-[1.35cqi] font-semibold">{head}</Body>
-              <Body className="mt-[0.35cqi] text-[1.22cqi] opacity-80">{line}</Body>
+      <Mast label="17 · Why realtors say yes" index="14 / 18" />
+      <div>
+        <Statement className="max-w-[70%]">Their name travels. The lift is low.</Statement>
+        <div className="mt-[2cqi] grid grid-cols-12 gap-x-[2.4cqi]">
+          {REALTOR_POINTS.map(([n, head, line]) => (
+            <div key={n} className="col-span-3 dk-col">
+              <Note className="dk-accent">{n}</Note>
+              <Statement size="xs" className="mt-[0.4cqi]">
+                {head}
+              </Statement>
+              <Small className="mt-[0.6cqi] opacity-80">{line}</Small>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
       <So>The agent brings a name. We do the work.</So>
     </Slide>
