@@ -558,3 +558,163 @@
     }
   }
 }
+
+/* ---------- Investor deck ----------
+   One slide is a container: every size below is a share of its own width,
+   so the deck scales from a laptop to a projector without a single breakpoint. */
+.deck-frame {
+  width: 100%;
+  max-width: min(1500px, calc((100dvh - 190px) * 16 / 9));
+  margin-inline: auto;
+}
+
+.deck-slide {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.4cqi;
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  padding: 4.6cqi 5cqi 3.8cqi;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.deck-label {
+  font-family: var(--font-mono);
+  font-size: 1.02cqi;
+  line-height: 1.2;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.deck-title {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-variation-settings: "SOFT" 100;
+  font-size: 4.4cqi;
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.deck-title-sm {
+  font-size: 3.4cqi;
+}
+
+.deck-sub {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-variation-settings: "SOFT" 100;
+  font-size: 2.3cqi;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.deck-body {
+  font-family: var(--font-body);
+  font-size: 1.55cqi;
+  line-height: 1.42;
+  margin: 0;
+}
+
+.deck-slide strong,
+.deck-slide .font-semibold {
+  font-weight: 500;
+}
+
+.deck-spec {
+  font-family: var(--font-mono);
+  font-size: 1.08cqi;
+  line-height: 1.35;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.deck-so {
+  display: flex;
+  align-items: baseline;
+  gap: 1.2cqi;
+  border-top: 1.5px solid currentColor;
+  padding-top: 1.1cqi;
+}
+
+.deck-so-text {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-variation-settings: "SOFT" 100;
+  font-size: 1.85cqi;
+  line-height: 1.15;
+  margin: 0;
+}
+
+.deck-hair {
+  border-top: 1.5px solid currentColor;
+}
+
+.deck-cover {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-variation-settings: "SOFT" 100;
+  font-size: 5.2cqi;
+  line-height: 1.03;
+  letter-spacing: -0.01em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.deck-cover-2 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-variation-settings: "SOFT" 100;
+  font-size: 4.2cqi;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  margin: 1.6cqi 0 0;
+}
+
+.deck-mark {
+  display: inline-block;
+  background: #c2402f;
+  color: #f8ebda;
+  padding: 0.1cqi 0.7cqi 0.4cqi;
+}
+
+.deck-quote {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-variation-settings: "SOFT" 100;
+  font-size: 2.6cqi;
+  line-height: 1.22;
+  margin: 0;
+}
+
+.deck-figure {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-variation-settings: "SOFT" 100;
+  font-size: 2.4cqi;
+  line-height: 1;
+}
+
+.deck-big {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-variation-settings: "SOFT" 100;
+  font-size: 3.6cqi;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  margin: 0.5cqi 0 0;
+}
+
+.deck-huge {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-variation-settings: "SOFT" 100;
+  font-size: 8.6cqi;
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
