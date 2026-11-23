@@ -72,8 +72,7 @@ export default function QuoteLab({ status }) {
     if (!waiting || checks >= AUTO_CHECKS) return undefined;
     const timer = setTimeout(() => refresh(quote.id), CHECK_EVERY_MS);
     return () => clearTimeout(timer);
-    // refresh is stable enough for a timer keyed on the quote and the count
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Keyed on the quote and the count, so each check schedules the next one.
   }, [waiting, checks, quote?.id]);
 
   const run = async (event) => {
