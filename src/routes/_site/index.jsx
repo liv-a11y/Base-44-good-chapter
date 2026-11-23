@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import Hero from "@/components/site/Hero";
-import SampleObjects from "@/components/site/SampleObjects";
+import ChapterGrid from "@/components/site/ChapterGrid";
 import HowItWorks from "@/components/site/HowItWorks";
+import Promises from "@/components/site/Promises";
 import GiftsSection from "@/components/site/GiftsSection";
 import InviteSection from "@/components/site/InviteSection";
 import WhyWeExist from "@/components/site/WhyWeExist";
@@ -23,8 +24,9 @@ function HomePage() {
   return (
     <>
       <Hero />
-      <SampleObjects />
+      <ChapterGrid />
       <HowItWorks />
+      <Promises />
       <GiftsSection />
       <InviteSection />
       <WhyWeExist />

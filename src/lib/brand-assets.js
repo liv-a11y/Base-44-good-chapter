@@ -17,6 +17,21 @@ export const DRAWINGS = {
   gift: `/brand/gift-paper.png`,
 };
 
+/** Block-print chapter symbols, one burgundy and one paper file each. See public/brand/ICONS.md. */
+const symbol = (slug) => ({
+  ink: `/brand/icons/chapters/${slug}-burgundy.png`,
+  paper: `/brand/icons/chapters/${slug}-paper.png`,
+});
+
+export const CHAPTER_SYMBOLS = {
+  firstPlace: symbol("home"),
+  movingIn: symbol("moving-in"),
+  startingOver: symbol("divorce"),
+  freshStart: symbol("fresh-start"),
+  newWork: symbol("new-job"),
+  newBabySolo: symbol("new-arrival"),
+};
+
 export const ARCHIVE = {
   interior: `/media/marshall-field-interior.jpg`,
   street: `/media/marshall-field-1906.jpg`,
