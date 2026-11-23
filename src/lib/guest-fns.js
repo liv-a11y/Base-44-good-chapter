@@ -59,6 +59,13 @@ export const getGuestChapter = createServerFn({ method: "GET" })
     );
     const paid = paidPage.items ?? paidPage;
 
+    // What this guest themselves put in, so they can see where they stand.
+    const minePage = await service.entities.Contribution.filter(
+      { chapter_id: chapter.id, guest_id: guest.id },
+      { limit: 50 },
+    );
+    const mine = minePage.items ?? minePage;
+
     return {
       checkout_ready: paymentsReady(),
       person_name: chapter.person_name,
@@ -68,15 +75,25 @@ export const getGuestChapter = createServerFn({ method: "GET" })
       open: chapter.state === OPEN_STATE && personSaidYes(chapter),
       accepted: personSaidYes(chapter),
       guest_name: guest.name,
+      my_given: mine
+        .filter((row) => row.status === "paid")
+        .reduce((sum, row) => sum + (row.amount || 0), 0),
+      my_pending: mine
+        .filter((row) => row.status === "pending")
+        .reduce((sum, row) => sum + (row.amount || 0), 0),
       items: (itemPage.items ?? itemPage)
         .filter((item) => VISIBLE.includes(item.status))
         .map((item) => {
           const claim = claims.find((row) => row.item_id === item.id);
           const given = paid.filter((row) => row.item_id === item.id);
           const collected = given.reduce((sum, row) => sum + (row.amount || 0), 0);
-          const mineGiven = given
-            .filter((row) => row.guest_id === guest.id)
+          const myAmount = mine
+            .filter((row) => row.item_id === item.id && row.status === "paid")
             .reduce((sum, row) => sum + (row.amount || 0), 0);
+          const myPending = mine
+            .filter((row) => row.item_id === item.id && row.status === "pending")
+            .reduce((sum, row) => sum + (row.amount || 0), 0);
+          const givers = new Set(given.map((row) => row.guest_id)).size;
           return {
             id: item.id,
             name: item.name,
@@ -88,8 +105,9 @@ export const getGuestChapter = createServerFn({ method: "GET" })
             giving_mode: item.giving_mode === "pool" ? "pool" : "individual",
             pool_target: item.pool_target ?? 0,
             collected,
-            my_amount: mineGiven,
-            givers: given.length,
+            my_amount: myAmount,
+            my_pending: myPending,
+            givers,
             claim: claim
               ? {
                   display_name: claim.display_name || "",
@@ -149,7 +167,10 @@ export const getGuestIdeas = createServerFn({ method: "GET" })
     if (!chapter || chapter.state !== OPEN_STATE || !personSaidYes(chapter)) return null;
 
     const stored = parseIdeas(guest.ideas);
-    if (stored.length) return { ideas: stored, shared: guest.shared_idea || "" };
+    const own = stored.filter((row) => row.mine);
+    const made = stored.filter((row) => !row.mine);
+    const shared = guest.shared_idea || "";
+    if (made.length) return { ideas: [...made, ...own], shared };
 
     const itemPage = await service.entities.Item.filter(
       { chapter_id: chapter.id },
@@ -177,26 +198,70 @@ export const getGuestIdeas = createServerFn({ method: "GET" })
       .filter(Boolean)
       .join("\n");
 
-    const result = await service.integrations.Core.InvokeLLM({
-      prompt,
-      response_json_schema: IDEAS_SCHEMA,
-    });
+    let fresh = [];
+    try {
+      const result = await service.integrations.Core.InvokeLLM({
+        prompt,
+        response_json_schema: IDEAS_SCHEMA,
+      });
 
-    const ideas = (result?.ideas ?? [])
-      .filter((row) => row && row.name)
-      .slice(0, 3)
-      .map((row) => ({
-        name: short(row.name, 90),
-        what: short(row.what, 240),
-        why: short(row.why, 280),
-        find: short(row.find, 90),
-      }));
+      fresh = (result?.ideas ?? [])
+        .filter((row) => row && row.name)
+        .slice(0, 3)
+        .map((row) => ({
+          name: short(row.name, 90),
+          what: short(row.what, 240),
+          why: short(row.why, 280),
+          find: short(row.find, 90),
+        }));
+    } catch {
+      fresh = [];
+    }
 
-    if (ideas.length) {
+    // A guest who has written their own keeps them, whether or not the three
+    // suggestions came through.
+    const ideas = [...fresh, ...own];
+    if (fresh.length) {
       await service.entities.Guest.update(guest.id, { ideas: JSON.stringify(ideas) });
     }
 
-    return { ideas, shared: "" };
+    return { ideas, shared };
+  });
+
+/** How many ideas a guest can write themselves. Three is plenty. */
+const OWN_LIMIT = 3;
+
+/** A guest writes down their own idea. It stays on their record, for them only. */
+export const saveGuestIdea = createServerFn({ method: "POST" })
+  .validator(
+    z.object({
+      token: z.string().trim().min(12).max(64),
+      name: z.string().trim().min(1).max(90),
+      what: z.string().trim().max(240).optional(),
+    }),
+  )
+  .handler(async ({ data, context }) => {
+    const service = context.getBase44().asServiceRole;
+
+    const guest = await guestByToken(service, data.token);
+    if (!guest) return { ok: false };
+
+    const chapter = await findChapter(service, guest.chapter_id);
+    if (!chapter || chapter.state !== OPEN_STATE || !personSaidYes(chapter)) return { ok: false };
+
+    const stored = parseIdeas(guest.ideas);
+    if (stored.filter((row) => row.mine).length >= OWN_LIMIT) {
+      return { ok: false, reason: "limit" };
+    }
+
+    const ideas = [
+      ...stored,
+      { name: data.name, what: data.what ?? "", why: "", find: "", mine: true },
+    ];
+
+    await service.entities.Guest.update(guest.id, { ideas: JSON.stringify(ideas) });
+
+    return { ok: true, ideas };
   });
 
 /** One guest passes an idea to the curator. It is never added to the list. */

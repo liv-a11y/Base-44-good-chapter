@@ -102,6 +102,13 @@ export default function GuestItem({ item, index, open, checkoutReady, onClaim, o
                 target={item.pool_target || 0}
                 givers={item.givers || 0}
               />
+              {item.my_amount > 0 ? (
+                <p className="gc-label mt-2 text-cobalt">You put in {money(item.my_amount)}</p>
+              ) : item.my_pending > 0 ? (
+                <p className="gc-label mt-2 text-ink/50">
+                  A {money(item.my_pending)} checkout was not finished.
+                </p>
+              ) : null}
               {!open ? (
                 <p className="gc-label mt-4 text-ink/40">Not open</p>
               ) : remaining <= 0 ? (

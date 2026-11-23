@@ -65,6 +65,16 @@ function GuestChapter() {
           </p>
         )}
 
+        {chapter.my_given > 0 ? (
+          <p className="gc-label mt-6 border-l border-cobalt pl-4 text-cobalt">
+            Your gift is in. Thank you.
+          </p>
+        ) : chapter.my_pending > 0 ? (
+          <p className="gc-label mt-6 border-l border-ink/40 pl-4 text-ink/60">
+            A checkout was started and not finished. Nothing was charged.
+          </p>
+        ) : null}
+
         {chapter.items.length ? (
           <div className="mt-12 grid gap-5 sm:grid-cols-2">
             {chapter.items.map((item, index) => (
@@ -85,7 +95,7 @@ function GuestChapter() {
           </p>
         )}
 
-        {chapter.open ? <PrivateIdeas token={token} person={first} /> : null}
+        {chapter.open ? <PrivateIdeas token={token} /> : null}
 
         <p className="gc-label mt-12 text-ink/45">
           A friend started this. {first} approved every item here. Nobody asked.
