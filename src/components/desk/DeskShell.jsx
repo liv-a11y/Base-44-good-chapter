@@ -20,6 +20,9 @@ export default function DeskShell({ children }) {
             <Link to="/desk/requests" className="gc-label pb-0.5 text-plaster/65">
               Requests
             </Link>
+            <Link to="/desk/quote" className="gc-label pb-0.5 text-plaster/65">
+              Quote
+            </Link>
             <Link to="/" className="gc-label pb-0.5 text-plaster">
               Leave
             </Link>
