@@ -999,3 +999,154 @@
     animation: none;
   }
 }
+
+/* ---------- Type specimen ----------
+   A working sheet: one set of copy, one palette, one layout. Only the faces
+   change, so the comparison is honest. */
+@font-face {
+  font-family: "Raw Serif";
+  src: url("https://media.base44.com/files/public/6af66f925ddaabe6b3b327a8/e085c2a73_RawSerif-Regular.ttf")
+    format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Raw Serif";
+  src: url("https://media.base44.com/files/public/6af66f925ddaabe6b3b327a8/35be67775_RawSerif-Italic.ttf")
+    format("truetype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Raw Serif";
+  src: url("https://media.base44.com/files/public/6af66f925ddaabe6b3b327a8/68e3ffd49_RawSerif-Bold.ttf")
+    format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Raw Serif";
+  src: url("https://media.base44.com/files/public/6af66f925ddaabe6b3b327a8/a97ce4fa4_RawSerif-BoldItalic.ttf")
+    format("truetype");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+.spec-page {
+  min-height: 100vh;
+  background: #f8ebda;
+  color: #651c1a;
+}
+
+.spec-shell {
+  width: 100%;
+  max-width: 1160px;
+  margin-inline: auto;
+  padding-inline: 22px;
+}
+
+.spec-bar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: #f8ebda;
+  border-bottom: 1.5px solid #651c1a;
+}
+
+.spec-bar-inner {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px 20px;
+  flex-wrap: wrap;
+  padding-block: 13px;
+}
+
+.spec-mono {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.spec-sheet,
+.spec-type {
+  border: 1.5px solid #651c1a;
+  padding: clamp(20px, 3.4vw, 42px);
+}
+
+.spec-sheet + .spec-sheet {
+  margin-top: 26px;
+}
+
+.spec-sheet-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px 18px;
+  flex-wrap: wrap;
+  padding-bottom: 12px;
+  border-bottom: 1.5px solid #651c1a;
+}
+
+/* Every face below is read from a variable the sheet sets. */
+.spec-kicker {
+  font-family: var(--t-label);
+  font-size: 12px;
+  letter-spacing: var(--t-label-track, 0.2em);
+  text-transform: uppercase;
+}
+
+.spec-head {
+  font-family: var(--t-head);
+  font-weight: var(--t-head-weight, 400);
+  font-size: clamp(30px, 4.4vw, 54px);
+  line-height: var(--t-head-lead, 1.04);
+  letter-spacing: var(--t-head-track, -0.01em);
+  margin: 0;
+}
+
+.spec-lede {
+  font-family: var(--t-body);
+  font-size: var(--t-body-size, 19px);
+  line-height: var(--t-body-lead, 1.45);
+  margin: 0;
+}
+
+.spec-quote {
+  font-family: var(--t-aside);
+  font-size: clamp(18px, 1.9vw, 23px);
+  line-height: 1.3;
+  margin: 0;
+}
+
+.spec-item-name {
+  font-family: var(--t-body);
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.spec-item-why {
+  font-family: var(--t-body);
+  font-size: 17px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.spec-btn {
+  font-family: var(--t-label);
+}
+
+.spec-glyphs {
+  font-family: "Raw Serif";
+  word-break: break-word;
+  margin: 0;
+}
