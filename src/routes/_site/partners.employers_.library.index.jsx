@@ -93,7 +93,7 @@ function LibraryPage() {
       <section className="mx-auto max-w-6xl px-6 py-14">
         <p className="gc-label text-clay">Browse by where you are</p>
         <div className="mt-5 flex flex-wrap gap-2">
-          <button type="button" aria-pressed={moment === ""} onClick={() => setMoment("")} className="gc-option">
+          <button type="button" aria-pressed={moment === ""} onClick={() => setMoment("")} className="gc-option !w-auto">
             Everything
           </button>
           {MOMENTS.map((m) => (
@@ -102,7 +102,7 @@ function LibraryPage() {
               type="button"
               aria-pressed={moment === m.key}
               onClick={() => setMoment(m.key)}
-              className="gc-option"
+              className="gc-option !w-auto"
             >
               {m.label}
             </button>
