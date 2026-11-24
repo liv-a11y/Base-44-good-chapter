@@ -60,6 +60,7 @@ function EmployersPage() {
           <div className="mt-8 flex flex-wrap items-center gap-5">
             <a href="#start" className="inline-block rounded-sm border-2 border-foreground bg-primary px-5 py-3 text-primary-foreground hover:bg-foreground hover:text-background">Start with your team</a>
             <Link to="/partners/employers/dashboard" className="underline underline-offset-4 hover:bg-foreground hover:text-background">See what HR sees</Link>
+            <Link to="/partners/employers/library" className="underline underline-offset-4 hover:bg-foreground hover:text-background">Free library for managers</Link>
           </div>
           <p className="eyebrow mt-4">Counts and spend only. Nobody sees why. No integration to start.</p>
         </div>
