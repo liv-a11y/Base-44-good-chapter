@@ -1,0 +1,86 @@
+{
+  "name": "AffiliateProduct",
+  "description": "A product the curator has vetted for chapters, with the retailer, the link, and where its approval stands. Never one of the eight until the curator puts it in a chapter.",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The object, named the way the retailer names it."
+    },
+    "description": {
+      "type": "string",
+      "description": "One or two plain sentences about what it is and who it suits."
+    },
+    "retailer": {
+      "type": "string",
+      "description": "Who sells it. Shown small, never called a partner."
+    },
+    "category": {
+      "type": "string",
+      "description": "One word shelf, such as Kitchen or Textile."
+    },
+    "price": {
+      "type": "number"
+    },
+    "product_url": {
+      "type": "string",
+      "description": "The plain product page."
+    },
+    "affiliate_url": {
+      "type": "string",
+      "description": "The tracked link, when an approved program provides one. Empty means no affiliate program is attached."
+    },
+    "photo_url": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "proposed",
+        "approved",
+        "retired"
+      ],
+      "enumColors": [
+        "yellow",
+        "green",
+        "gray"
+      ],
+      "default": "proposed",
+      "description": "Approved means the curator would put it in a chapter. Retired keeps the record and hides it from picking."
+    },
+    "note": {
+      "type": "string",
+      "description": "Why the curator kept it, and anything to check before using it again."
+    },
+    "is_sample": {
+      "type": "boolean",
+      "default": false,
+      "description": "Seeded example data. Always shown with a SAMPLE label."
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
